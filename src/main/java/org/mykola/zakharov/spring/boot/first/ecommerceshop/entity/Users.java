@@ -22,7 +22,7 @@ public class Users {
     private Long id;
 
     @Column(name="login", length=25)
-    private String login;
+    private String vendor;
     @Column(name="password", length=255) // redundant -  тоесть стандарт значение 255? или что?
     private String password;
 
