@@ -1,4 +1,4 @@
-package org.mykola.zakharov.spring.boot.first.ecommerceshop.entity;
+package org.mykola.zakharov.spring.boot.first.ecommerceshop.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -11,8 +11,9 @@ import java.util.List;
 @Builder(toBuilder = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CategoryResponseModel {
+public class UserResponseModel {
     private String status;
     private String message;
-    private List categories;
+    private UserModel user;
+    private List<UserModel> users;
 }

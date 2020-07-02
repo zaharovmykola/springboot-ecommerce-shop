@@ -1,9 +1,11 @@
 package org.mykola.zakharov.spring.boot.first.ecommerceshop.service;
 
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.dao.RoleHibernateDAO;
-import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.RoleResponseModel;
-import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.Roles;
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.RoleResponseModel;
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.Role;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.RoleModel;
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.UserModel;
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.UserResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
@@ -18,39 +20,49 @@ public class RoleService {
     private RoleHibernateDAO dao;
 
     public RoleResponseModel add(RoleModel roleModel) {
-        Roles roles =
-                Roles.builder()
-                .vendor(roleModel.getVendor())
+        Role role =
+                Role.builder()
+                .name(roleModel.getName())
                 .build();
-        dao.save(roles);
+        dao.save(role);
         RoleResponseModel response =
                 RoleResponseModel.builder()
                         .status("success")
-                        .message("Next role added successfully :" + roles.getVendor())
+                        .message("Next role added successfully :" + role.getName())
                         .build();
         return response;
     }
 
-    public RoleResponseModel getRole(String vendor) {
-        List<Roles> roles = dao.findByVendor(vendor);
-        List <RoleModel> rolesModels = roles.stream().map((rol) ->
-                RoleModel.builder()
-                .id(rol.getId())
-                .vendor(rol.getVendor())
-                .build()
-        ).collect(Collectors.toList());
-        return RoleResponseModel.builder()
+    public UserResponseModel getRoleUsers(String roleName) {
+        Role role = dao.findRoleByName(roleName);
+        if (role != null) {
+            List<UserModel> userModels =
+                role.getSetOfUsers().stream().map(us ->
+                    UserModel.builder()
+                            .id(us.getId())
+                            .login(us.getLogin())
+                            .password(us.getPassword())
+                            .build()
+                )
+                .collect(Collectors.toList());
+        return UserResponseModel.builder()
                 .status("success")
-                .roles(rolesModels)
+                .users(userModels)
                 .build();
+        } else {
+            return UserResponseModel.builder()
+                    .status("success")
+                    .message("No users: Role " + roleName + "not found")
+                    .build();
+        }
     }
 
     public List<RoleModel> getAllRoles () {
-        List<Roles> roles = dao.findAll();
+        List<Role> roles = dao.findAll();
         List <RoleModel> rolesModels = roles.stream().map((rol) ->
                 RoleModel.builder()
                         .id(rol.getId())
-                        .vendor(rol.getVendor())
+                        .name(rol.getName())
                         .build()
         ).collect(Collectors.toList());
          return rolesModels;

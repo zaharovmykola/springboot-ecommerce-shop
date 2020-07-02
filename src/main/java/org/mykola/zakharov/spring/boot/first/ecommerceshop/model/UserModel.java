@@ -11,6 +11,6 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserModel {
     private Long id;
-    private String vendor;
+    private String login;
     private String password;
 }

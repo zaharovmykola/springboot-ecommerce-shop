@@ -1,6 +1,6 @@
 package org.mykola.zakharov.spring.boot.first.ecommerceshop.controller;
 
-import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.RoleResponseModel;
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.RoleResponseModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.RoleModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +20,10 @@ public class RoleController {
         return service.add(role);
     }
 
-    @GetMapping("/getRolesByVendor/{vendor}")
+    /* @GetMapping("/getRolesByVendor/{vendor}")
     public RoleResponseModel getRole(@PathVariable String vendor) {
         return service.getRole(vendor);
-    }
+    } */
 
     @GetMapping("/getAllRoles")
     public List<RoleModel> getAllRoles() {

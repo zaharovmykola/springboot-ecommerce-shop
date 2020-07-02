@@ -1,11 +1,9 @@
 package org.mykola.zakharov.spring.boot.first.ecommerceshop.service;
 
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.dao.RoleHibernateDAO;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.dao.UserHibernateDAO;
-import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.RoleResponseModel;
-import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.Roles;
-import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.UserResponseModel;
-import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.Users;
-import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.RoleModel;
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.UserResponseModel;
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.User;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,29 +17,53 @@ import java.util.stream.Collectors;
 public class UserService {
 
     @Autowired
-    private UserHibernateDAO dao;
+    private UserHibernateDAO userDao;
+
+    @Autowired
+    private RoleHibernateDAO roleDao;
 
     public UserResponseModel add(UserModel userModel) {
-        Users users =
-                Users.builder()
-                        .vendor(userModel.getVendor())
+        User user =
+                User.builder()
+                        .login(userModel.getLogin())
                         .password(userModel.getPassword())
+                        .role(roleDao.findRoleByName("user"))
                         .build();
-        dao.save(users);
+        userDao.save(user);
         UserResponseModel response =
                 UserResponseModel.builder()
                         .status("success")
-                        .message("Next user added successfully :" + users.getVendor())
+                        .message("Next user added successfully :" + user.getLogin())
                         .build();
         return response;
     }
 
-    public UserResponseModel getUser(String vendor) {
-        List<Users> users = dao.findByVendor(vendor);
+    public UserResponseModel getUser(String login) {
+        User user = userDao.findUserByLogin(login);
+        if (user != null){
+            UserModel userModel = UserModel.builder()
+                    .id(user.getId())
+                    .login(user.getLogin())
+                    // .password(user.getPassword())
+                    .build();
+            return UserResponseModel.builder()
+                    .status("success")
+                    .user(userModel)
+                    .build();
+        } else {
+            return UserResponseModel.builder()
+                    .status("success")
+                    .message("User " + login + " was not found")
+                    .build();
+        }
+    }
+
+    public UserResponseModel getAllUsers() {
+        List<User> users = userDao.findAll();
         List<UserModel> userModels = users.stream().map((us) ->
                 UserModel.builder()
                         .id(us.getId())
-                        .vendor(us.getVendor())
+                        .login(us.getLogin())
                         .password(us.getPassword())
                         .build()
         ).collect(Collectors.toList());
@@ -49,17 +71,5 @@ public class UserService {
                 .status("success")
                 .users(userModels)
                 .build();
-    }
-
-    public List<UserModel> getAllUsers() {
-        List<Users> users = dao.findAll();
-        List<UserModel> userModels = users.stream().map((us) ->
-                UserModel.builder()
-                        .id(us.getId())
-                        .vendor(us.getVendor())
-                        .password(us.getPassword())
-                        .build()
-        ).collect(Collectors.toList());
-        return userModels;
     }
 }

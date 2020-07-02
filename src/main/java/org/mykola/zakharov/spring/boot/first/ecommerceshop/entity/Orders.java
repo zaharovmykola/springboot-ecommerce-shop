@@ -25,7 +25,7 @@ public class Orders {
 
     @ManyToOne(fetch = FetchType.LAZY) // выкачиватся данные будут только когда попросят
     @JoinColumn(name = "user_id")
-    private Users user;
+    private User user;
 
     @Column(name="quantity")
     private Integer quantity;

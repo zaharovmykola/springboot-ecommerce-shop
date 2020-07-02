@@ -15,21 +15,21 @@ import java.util.Set;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Users {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name="login", length=25)
-    private String vendor;
+    private String login;
     @Column(name="password", length=255) // redundant -  тоесть стандарт значение 255? или что?
     private String password;
 
     @ManyToOne(fetch = FetchType.LAZY) // выкачиватся данные будут только когда попросят
-    @JoinColumn(name = "role_id")
-    private Roles role;
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 
     @OneToMany(mappedBy = "user")
-    private Set<Orders> setOfWorkers = new HashSet<>(0);
+    private Set<Orders> setOfUsers = new HashSet<>(0);
 }
