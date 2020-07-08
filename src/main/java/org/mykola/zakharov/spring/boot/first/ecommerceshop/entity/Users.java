@@ -32,4 +32,7 @@ public class Users {
 
     @OneToMany(mappedBy = "user")
     private Set<Orders> setOfWorkers = new HashSet<>(0);
+
+    @OneToOne(mappedBy = "user")
+    private ShoppingCart shoppingCart;
 }

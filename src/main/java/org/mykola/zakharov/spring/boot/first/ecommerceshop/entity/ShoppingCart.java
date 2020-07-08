@@ -1,5 +1,6 @@
 package org.mykola.zakharov.spring.boot.first.ecommerceshop.entity;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,20 +11,20 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name="category")
+@Table(name="shopping_cart")
 @Data
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Category {
+public class ShoppingCart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="name", length=25)
-    private String vendor;
+    @OneToOne
+    @PrimaryKeyJoinColumn
+    private Users user;
 
-    @OneToMany(mappedBy = "category")
-    private Set<Products> setOfWorkers = new HashSet<>(0);
+    private Set<Products> setOfProducts = new HashSet<>(0);
 }

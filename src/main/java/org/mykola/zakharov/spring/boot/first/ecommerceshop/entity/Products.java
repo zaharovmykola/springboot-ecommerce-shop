@@ -16,7 +16,7 @@ import java.util.Set;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Articles {
+public class Products {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
