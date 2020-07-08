@@ -1,4 +1,4 @@
-package org.mykola.zakharov.spring.boot.first.ecommerceshop.entity;
+package org.mykola.zakharov.spring.boot.first.ecommerceshop.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -14,5 +14,6 @@ import java.util.List;
 public class RoleResponseModel {
     private String status;
     private String message;
+    private RoleModel role;
     private List roles;
 }

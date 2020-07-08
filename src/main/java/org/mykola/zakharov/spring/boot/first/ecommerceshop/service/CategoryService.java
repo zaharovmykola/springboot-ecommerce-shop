@@ -1,13 +1,9 @@
 package org.mykola.zakharov.spring.boot.first.ecommerceshop.service;
 
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.dao.CategoryHibernateDAO;
-import org.mykola.zakharov.spring.boot.first.ecommerceshop.dao.RoleHibernateDAO;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.Category;
-import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.CategoryResponseModel;
-import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.RoleResponseModel;
-import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.Roles;
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.CategoryResponseModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.CategoryModel;
-import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.RoleModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +31,7 @@ public class CategoryService {
         return response;
     }
 
-    public CategoryResponseModel getCategory(String vendor) {
+    /* public CategoryResponseModel getCategory(String vendor) {
         List<Category> categories = dao.findByVendor(vendor);
         List <CategoryModel> categoryModels = categories.stream().map((categor) ->
                 CategoryModel.builder()
@@ -47,7 +43,7 @@ public class CategoryService {
                 .status("success")
                 .categories(categoryModels)
                 .build();
-    }
+    } */
 
     public List<CategoryModel> getAllCategories () {
         List<Category> categories = dao.findAll();

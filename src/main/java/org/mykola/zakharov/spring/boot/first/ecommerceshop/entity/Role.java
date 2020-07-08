@@ -1,9 +1,6 @@
 package org.mykola.zakharov.spring.boot.first.ecommerceshop.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -12,18 +9,19 @@ import java.util.Set;
 @Entity
 @Table(name="roles")
 @Data
+@EqualsAndHashCode(exclude = "setOfUsers")
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Roles {
+public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name="name", length=25)
-    private String vendor;
+    private String name;
 
-    @OneToMany(mappedBy = "role")
-    private Set<Users> setOfWorkers = new HashSet<>(0);
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
+    private Set<User> setOfUsers = new HashSet<>(0);
 }

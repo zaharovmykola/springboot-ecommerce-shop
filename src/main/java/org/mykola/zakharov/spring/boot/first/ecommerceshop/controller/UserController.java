@@ -1,8 +1,7 @@
 package org.mykola.zakharov.spring.boot.first.ecommerceshop.controller;
 
-import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.RoleResponseModel;
-import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.UserResponseModel;
-import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.RoleModel;
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.RoleResponseModel;
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.UserResponseModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.UserModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.service.RoleService;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.service.UserService;
@@ -14,21 +13,33 @@ import java.util.List;
 @RestController
 @RequestMapping("/eCommerceShop")
 public class UserController {
+
     @Autowired
-    private UserService service;
+    private UserService userService;
+
+    @Autowired
+    private RoleService roleService;
 
     @PostMapping("/addUser")
     public UserResponseModel addInstant(@RequestBody UserModel user) {
-        return service.add(user);
+        return userService.add(user);
     }
 
-    @GetMapping("/getUsersByVendor/{vendor}")
-    public UserResponseModel getUser(@PathVariable String vendor) {
-        return service.getUser(vendor);
+    // /eCommerceShop/getUserByLogin
+    @GetMapping("/getUserByLogin/{login}")
+    public UserResponseModel getUser(@PathVariable String login) {
+        return userService.getUser(login);
     }
 
     @GetMapping("/getAllUsers")
-    public List<UserModel> getAllUsers() {
-        return service.getAllUsers();
+    public UserResponseModel getAllUsers() {
+        return userService.getAllUsers();
     }
+
+    @GetMapping("/getUsersByRole/{roleName}")
+    public UserResponseModel getUsersByRole(@PathVariable String roleName) {
+        return roleService.getRoleUsers(roleName);
+    }
+
+    // /eCommerceShop/getUserByLogin/Kievstar
 }
