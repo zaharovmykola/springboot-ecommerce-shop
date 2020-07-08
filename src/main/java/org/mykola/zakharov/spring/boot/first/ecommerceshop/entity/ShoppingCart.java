@@ -26,5 +26,5 @@ public class ShoppingCart {
     @PrimaryKeyJoinColumn
     private Users user;
 
-    private Set<Products> setOfProducts = new HashSet<>(0);
+    private Set<Product> setOfProducts = new HashSet<>(0);
 }

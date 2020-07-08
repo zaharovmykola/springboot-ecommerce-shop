@@ -1,0 +1,10 @@
+<div id="shopping-root"></div>
+<script>
+    app.handler(function (param) {
+        const $page = $(this)
+        const $root = $page.find('#shopping-root')
+        return function (param) {
+            $root.html('<h1>Shopping page</h1>')
+        }
+    })
+</script>

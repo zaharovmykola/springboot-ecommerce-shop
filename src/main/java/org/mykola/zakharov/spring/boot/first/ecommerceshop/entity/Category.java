@@ -22,8 +22,8 @@ public class Category {
     private Long id;
 
     @Column(name="name", length=25)
-    private String vendor;
+    private String name;
 
     @OneToMany(mappedBy = "category")
-    private Set<Products> setOfWorkers = new HashSet<>(0);
+    private Set<Product> setOfWorkers = new HashSet<>(0);
 }

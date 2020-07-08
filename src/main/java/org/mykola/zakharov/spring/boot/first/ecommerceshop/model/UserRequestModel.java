@@ -9,9 +9,7 @@ import lombok.Data;
 @Builder(toBuilder = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserModel {
-    private Long id;
+public class UserRequestModel {
     private String name;
     private String password;
-    public Long roleId;
 }

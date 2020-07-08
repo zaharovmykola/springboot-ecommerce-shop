@@ -1,0 +1,12 @@
+<!-- Home page -->
+<div id="home-root"></div>
+<script>
+    app.handler(function (param) {
+        const $page = $(this)
+        const $root = $page.find('#home-root')
+        return function (param) {
+            console.log($page)
+            $root.html('<h1>Home page</h1>')
+        }
+    })
+</script>
