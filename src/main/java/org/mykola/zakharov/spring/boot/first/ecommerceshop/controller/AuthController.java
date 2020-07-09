@@ -77,4 +77,9 @@ public class AuthController {
     public ResponseEntity<ResponseModel> onError() {
         return new ResponseEntity<>(authService.onError(), HttpStatus.UNAUTHORIZED);
     }
+
+    @PutMapping(value = "/user/{id}/makeadmin")
+    public ResponseEntity<ResponseModel> makeUserAdmin(@PathVariable Long id) throws Exception {
+        return new ResponseEntity<>(authService.makeUserAdmin(id), HttpStatus.OK);
+    }
 }

@@ -20,7 +20,7 @@ public class Orders {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY) // выкачиватся данные будут только когда попросят
-    @JoinColumn(name = "product")
+    @JoinColumn(name = "product_id")
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY) // выкачиватся данные будут только когда попросят

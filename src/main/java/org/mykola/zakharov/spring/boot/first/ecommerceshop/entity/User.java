@@ -21,7 +21,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="name", length=25)
+    @Column(name="name", length=25, unique = true)
     private String name;
     @Column(name="password", length=255) // redundant -  тоесть стандарт значение 255? или что?
     private String password;

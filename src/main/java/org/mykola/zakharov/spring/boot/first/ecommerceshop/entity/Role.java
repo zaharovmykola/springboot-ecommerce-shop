@@ -10,6 +10,7 @@ import java.util.Set;
 @Table(name="roles")
 @Data
 @EqualsAndHashCode(exclude = "setOfUsers")
+@ToString(exclude = "setOfUsers")
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor

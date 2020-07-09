@@ -33,7 +33,7 @@ public class Product {
     @Column(name="image", columnDefinition = "LONGTEXT")  //  ???  longtext
     private String image;
 
-    @ManyToOne(fetch = FetchType.LAZY) // выкачиватся данные будут только когда попросят
+    @ManyToOne // выкачиватся данные будут сразу
     @JoinColumn(name = "category_id")
     private Category category;
 
