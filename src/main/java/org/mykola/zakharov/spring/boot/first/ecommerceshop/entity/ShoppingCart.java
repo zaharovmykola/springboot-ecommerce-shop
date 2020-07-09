@@ -24,7 +24,7 @@ public class ShoppingCart {
 
     @OneToOne
     @PrimaryKeyJoinColumn
-    private Users user;
+    private User user;
 
-    private Set<Product> setOfProducts = new HashSet<>(0);
+    //private Set<Product> setOfProducts = new HashSet<>(0);  // here is problem - solve it
 }

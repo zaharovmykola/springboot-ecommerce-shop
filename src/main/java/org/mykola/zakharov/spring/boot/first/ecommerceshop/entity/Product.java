@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name="articles")
+@Table(name="products")
 @Data
 @Builder(toBuilder = true)
 @NoArgsConstructor
@@ -37,7 +37,7 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToMany(mappedBy = "article")
+    @OneToMany(mappedBy = "product")
     private Set<Orders> setOfWorkers = new HashSet<>(0);
 }
 
