@@ -26,5 +26,6 @@ public class ShoppingCart {
     @PrimaryKeyJoinColumn
     private User user;
 
-    //private Set<Product> setOfProducts = new HashSet<>(0);  // here is problem - solve it
+    @OneToMany(mappedBy = "shoppingCart", fetch = FetchType.LAZY)
+    private Set<Product> setOfProducts = new HashSet<>(0);  // here is problem - solve it
 }
