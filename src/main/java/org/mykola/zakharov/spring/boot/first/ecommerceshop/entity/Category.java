@@ -1,9 +1,6 @@
 package org.mykola.zakharov.spring.boot.first.ecommerceshop.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -12,6 +9,8 @@ import java.util.Set;
 @Entity
 @Table(name="category")
 @Data
+@EqualsAndHashCode(exclude = "setOfProducts")
+@ToString(exclude = "setOfProducts")
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,9 +20,9 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="name", length=25)
+    @Column(name="name", length=25, unique = true)
     private String name;
 
     @OneToMany(mappedBy = "category")
-    private Set<Product> setOfWorkers = new HashSet<>(0);
+    private Set<Product> setOfProducts = new HashSet<>(0);
 }

@@ -14,4 +14,8 @@ import java.util.List;
 public class RoleModel {
     private Long id;
     private String name;
+    private String status;
+    private String message;
+    private RoleModel role;
+    private List roles;
 }

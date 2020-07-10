@@ -10,6 +10,7 @@ import java.util.Set;
 @Table(name="roles")
 @Data
 @EqualsAndHashCode(exclude = "setOfUsers")
+@ToString(exclude = "setOfUsers")
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,7 +20,7 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="name", length=25)
+    @Column(name="name", length=25, unique = true)
     private String name;
 
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)

@@ -1,9 +1,6 @@
 package org.mykola.zakharov.spring.boot.first.ecommerceshop.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -13,6 +10,8 @@ import java.util.Set;
 @Entity
 @Table(name="products")
 @Data
+@EqualsAndHashCode(exclude = "setOfOrders")
+@ToString(exclude = "setOfOrders")
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,7 +21,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="title", columnDefinition="CHAR(4)")  //  ???  char(4)
+    @Column(name="title", columnDefinition="CHAR(4)", unique = true)  //  ???  char(4)
     private String title;
     @Column(name="description", length=500)
     private String description;
@@ -33,12 +32,12 @@ public class Product {
     @Column(name="image", columnDefinition = "LONGTEXT")  //  ???  longtext
     private String image;
 
-    @ManyToOne(fetch = FetchType.LAZY) // выкачиватся данные будут только когда попросят
+    @ManyToOne // выкачиватся данные будут сразу
     @JoinColumn(name = "category_id")
     private Category category;
 
     @OneToMany(mappedBy = "product")
-    private Set<Orders> setOfWorkers = new HashSet<>(0);
+    private Set<Orders> setOfOrders = new HashSet<>(0);
 
     @ManyToOne(fetch = FetchType.LAZY) // выкачиватся данные будут только когда попросят
     @JoinColumn(name = "shoppingCart_id", nullable = false)
