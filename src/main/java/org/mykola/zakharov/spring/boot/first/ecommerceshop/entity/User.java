@@ -30,7 +30,7 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private Set<Orders> setOfOrders = new HashSet<>(0);
+    private Set<Order> setOfOrders = new HashSet<>(0);
 
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
     private ShoppingCart shoppingCart;
