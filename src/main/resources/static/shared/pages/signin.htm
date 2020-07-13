@@ -1,0 +1,88 @@
+<div class="container">
+    <div class="row">
+        <div class="col s12">
+            <div class="card grey lighten-2">
+                <div class="card-content">
+                    <span class="card-title">Sign In<i class="material-icons right">account_circle</i></span>
+                    <div class="row">
+                        <form id="signin-form" class="col s12">
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <input id="username" name="username" type="text" class="validate" required>
+                                    <label for="username">Login</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <input id="password" name="password" type="text" class="validate" required>
+                                    <label for="password">Password</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <button class="btn waves-effect waves-light" type="submit" name="action">
+                                    Submit
+                                    <i class="material-icons right">send</i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    app.handler(function () {
+        const $page = $(this)
+        const $signInForms = $page.find('#signin-form')
+        const $modal = $('#modal')
+        return function (param) {
+            $signInForms.unbind('submit')
+            $signInForms.submit(function (ev) {
+                ev.preventDefault()
+                const signInForm = $signInForms[0]
+                $.ajax({
+                    url: "login"
+                    , data: $signInForms.serialize()
+                    , type: 'POST'
+                }).done(function (resp, statusText, xhr) {
+                    if (xhr.status == 200) {
+                        $.get("api/auth/user/check")
+                            .done(function (resp) {
+                                let modalInstance
+                                if (resp) {
+                                    if (resp.status === 'success') {
+                                        if (resp.data !== undefined) {
+                                            signInForm.reset()
+                                            onSignIn(resp.data)
+                                            window.location = "#!home"
+                                        }
+                                    } else if (resp.status === 'fail') {
+                                        modalInstance = M.Modal.getInstance($modal)
+                                        $modal.find('.modal-content').html("Auth error")
+                                        modalInstance.open()
+                                    } else if (resp.status === 'error') {
+                                        modalInstance = M.Modal.getInstance($modal)
+                                        $modal.find('.modal-content').html("Error: " + resp.message)
+                                        modalInstance.open()
+                                    }
+                                }
+                            })
+                            .fail(function (xhr, status, error) {
+                                alert("Fatal error: " + error)
+                            })
+                    } else {
+                        const modalInstance = M.Modal.getInstance($modal)
+                        $modal.find('.modal-content').html("Error: " + resp.message)
+                        modalInstance.open()
+                    }
+                }).fail(function (xhr, status, error) {
+                    const modalInstance = M.Modal.getInstance($modal)
+                    $modal.find('.modal-content').html("Error: " + error)
+                    modalInstance.open()
+                })
+            })
+            setTimeout(preloaderHide, 500)
+        }
+    })
+</script>

@@ -48,7 +48,17 @@ public class AuthController {
 
     @PostMapping("/user")
     public ResponseEntity<ResponseModel> createUser(@RequestBody UserRequestModel userRequestModel) {
-        return new ResponseEntity<>(authService.createUser(userRequestModel), HttpStatus.CREATED);
+        ResponseModel responseModel =
+                authService.createUser(userRequestModel);
+        System.out.println("responseModel = " + responseModel);
+        return new ResponseEntity<>(
+                responseModel,
+                (responseModel.getMessage().toLowerCase().contains("created"))
+                        ? HttpStatus.CREATED
+                        : responseModel.getMessage().contains("name")
+                        ? HttpStatus.CONFLICT
+                        : HttpStatus.BAD_GATEWAY
+        );
     }
 
     @DeleteMapping(value = "/user/{id}")

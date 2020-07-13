@@ -21,9 +21,9 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="title", columnDefinition="CHAR(4)", unique = true)  //  ???  char(4)
-    private String title;
-    @Column(name="description", length=500)
+    @Column(name = "name", nullable = false, unique = true, length = 25)
+    private String name;
+    @Column(name="description", nullable = false, length=500)
     private String description;
     @Column(name="price", columnDefinition="DECIMAL(10,0)")  // ??? decimal(10,0)
     private BigDecimal price;

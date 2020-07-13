@@ -20,9 +20,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="name", length=25, unique = true)
+    @Column(name="name", length=25, unique = true, nullable = false)
     private String name;
-    @Column(name="password", length=255) // redundant -  тоесть стандарт значение 255? или что?
+    @Column(name = "password", nullable = false, length = 16)
     private String password;
 
     @ManyToOne(fetch = FetchType.LAZY) // выкачиватся данные будут только когда попросят

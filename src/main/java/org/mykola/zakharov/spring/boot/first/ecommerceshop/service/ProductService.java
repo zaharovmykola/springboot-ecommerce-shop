@@ -20,7 +20,7 @@ public class ProductService {
         dao.save(product);
         return ResponseModel.builder()
                 .status("success")
-                .message(String.format("Product %s created", product.getTitle()))
+                .message(String.format("Product %s created", product.getName()))
                 .build();
     }
 
