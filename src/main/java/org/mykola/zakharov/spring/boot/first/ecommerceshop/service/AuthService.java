@@ -20,7 +20,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class AuthService {
 
     @Autowired
@@ -68,6 +67,7 @@ public class AuthService {
                 .build();
     }
 
+    @Transactional
     public ResponseModel getRoleUsers(Long roleId) {
         Optional<Role> roleOptional = roleDao.findById(roleId);
         if (roleOptional.isPresent()) {

@@ -35,7 +35,7 @@ public class ShoppingCartService {
             List<ProductModel> allProductsByUser = shoppingCart
                     .getSetOfProducts().stream().map(product ->
                             ProductModel.builder()
-                    .title(product.getTitle())
+                    .title(product.getName())
                     .description(product.getDescription())
                     .price(product.getPrice())
                     .quantity(product.getQuantity())
