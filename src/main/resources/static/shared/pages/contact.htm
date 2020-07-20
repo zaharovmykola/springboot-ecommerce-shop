@@ -1,31 +1,32 @@
 <!-- Contact page -->
 <div id="contact-root"></div>
 <script>
-    app.handler(function (param) {
+    app.handler(function () {
         const $page = $(this)
         const $root = $page.find('#contact-root')
         return function (param) {
-            $root.html(
-                `<h1>Telefon:</h1>
-                 <h1>E-mail:</h1>`
+            const data =
+                {   'header': 'ECommerce-Shop - TODOs',
+                    'todos': []
+                }
+            const template = Hogan.compile(
+                `<h1>{{header}}</h1>
+                {{#todos}}
+                    <div>Goal: {{title}}</div>
+                    <div>Completed: {{completed}}</div>
+                {{/todos}}
+                {{^todos}}
+                    <div>TODOs List is Empty</div>
+                {{/todos}}`
             )
-            if (param === 'out') {
-                $.ajax({
-                    url: "logout"
-                    , type: 'GET'
-                }).done(function (resp) {
-                    if (resp && resp.status && resp.status === "success") {
-                        onSignOut()
-                        window.location = "#!contact"
-                    } else {
-                        if (resp && resp.message) {
-                            alert("Error: " + resp.status)
-                        }
-                    }
-                }).fail(function () {
-                    alert("Fatal error")
+            $.get('https://jsonplaceholder.typicode.com/users/1/todos')
+                .done(responseData => {
+                    console.log(responseData)
+                    data.todos = responseData
+                    $root.html(
+                        template.render(data)
+                    )
                 })
-            }
             setTimeout(preloaderHide, 500)
         }
     })
