@@ -5,11 +5,17 @@
         const $page = $(this)
         const $root = $page.find('#contact-root')
         return function (param) {
-
-            $root.html(
+            const data = {
+                'phone number': 911,
+                'email': 'test@test.test'
+            }
+            const template = Hogan.compile(
                 `<h1>ECommerce-Shop - Contact</h1>
-                 <h2>Telephone: 911</h2>
-                 <h2>E-mail: test@test.test</h2>`
+                 <h2>Telephone: {{phone number}}</h2>
+                 <h2>E-mail: {{email}}</h2>`
+            )
+            $root.html(
+                template.render(data)
             )
             setTimeout(preloaderHide, 500)
         }
