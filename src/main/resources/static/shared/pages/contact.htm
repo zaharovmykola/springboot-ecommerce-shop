@@ -16,7 +16,7 @@
                 }).done(function (resp) {
                     if (resp && resp.status && resp.status === "success") {
                         onSignOut()
-                        window.location = "#!home"
+                        window.location = "#!contact"
                     } else {
                         if (resp && resp.message) {
                             alert("Error: " + resp.status)
