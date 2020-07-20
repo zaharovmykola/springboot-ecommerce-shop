@@ -6,10 +6,10 @@
     function show (pageName, param) {
         //preloaderShow();
         // invoke page handler
-        const ph = pageHandlers[pageName]
-        if (ph) {
+        const pageHandler = pageHandlers[pageName]
+        if (pageHandler) {
             const $page = $("section#" + pageName)
-            ph.call($page.length ? $page[0] : null, param) // call "page" handler
+            pageHandler.call($page.length ? $page[0] : null, param) // call "page" handler
         }
         // activate the page  
         $(document.body).attr("page", pageName)

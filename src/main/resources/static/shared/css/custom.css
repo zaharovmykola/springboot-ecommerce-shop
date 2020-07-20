@@ -1,0 +1,36 @@
+﻿/* Common */
+.preloader-wrapper {
+    position: absolute;
+    top: calc(50% - 32px);
+    left: calc(50% - 32px);
+    display: none;
+    z-index: 1000;
+}
+nav a.active, ul.sidenav a.active {
+    background-color: rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+}
+a[href='#!home:out'] {
+    display: none;
+}
+section {
+    display: none;
+}
+section.active {
+    display: block;
+}
+/* Admin */
+#categories-edit, #articles-edit {
+    display: none;
+}
+.selectedTableRow {
+    color: #26a69a;
+}
+/* Public */
+.flex {
+    display: flex;
+    flex-wrap: wrap;
+}
+.card:nth-child(3n) .card-content:after {
+    content: "<div class='divider'></div>" !important;
+}
