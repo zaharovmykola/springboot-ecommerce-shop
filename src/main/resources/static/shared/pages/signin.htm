@@ -14,7 +14,7 @@
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <input id="password" name="password" type="text" class="validate" required>
+                                    <input id="password" name="password" type="password" class="validate" required>
                                     <label for="password">Password</label>
                                 </div>
                             </div>
@@ -64,12 +64,23 @@
                                     } else if (resp.status === 'error') {
                                         modalInstance = M.Modal.getInstance($modal)
                                         $modal.find('.modal-content').html("Error: " + resp.message)
+                                        $modal.find('.modal-footer > a').attr('href', '#!' + window.location.hash)
                                         modalInstance.open()
                                     }
                                 }
-                            })
-                            .fail(function (xhr, status, error) {
-                                alert("Fatal error: " + error)
+                            }).fail(function (xhr, status, error) {
+                                /* template = Hogan.compile(
+                                    '<span>Error: ' + error + '</span>'
+                                ) */
+                                alert("Error: " + error)
+                            }).always(function (resp) {
+                                if (resp && resp.status && resp.status == 401) {
+                                    alert("Error: wrong username or password");
+                                } else if (resp && resp.status && resp.status === "success") {
+                                    // alert("Signed In");
+                                } else {
+                                    // alert("Unknown error");
+                                }
                             })
                     } else {
                         const modalInstance = M.Modal.getInstance($modal)
@@ -77,9 +88,15 @@
                         modalInstance.open()
                     }
                 }).fail(function (xhr, status, error) {
-                    const modalInstance = M.Modal.getInstance($modal)
-                    $modal.find('.modal-content').html("Error: " + error)
-                    modalInstance.open()
+                    /* template = Hogan.compile(
+                        '<span>Error: ' + error + '</span>'
+                    ) */
+                }).always(function (resp) {
+                    if (resp && resp.status && resp.status == 401) {
+                        alert("Error: wrong username or password");
+                    } else if (resp && resp.status === "fail") {
+                        alert(resp.message);
+                    }
                 })
             })
             setTimeout(preloaderHide, 500)

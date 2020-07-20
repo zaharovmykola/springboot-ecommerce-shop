@@ -5,8 +5,28 @@
         const $page = $(this)
         const $root = $page.find('#home-root')
         return function (param) {
-            console.log($page)
-            $root.html('<h1>Home page</h1>')
+            $root.html(
+                `<h1>Home page</h1>
+                <a href="#!shopping">Go Shopping!</a>`
+            )
+            if (param === 'out') {
+                $.ajax({
+                    url: "logout"
+                    , type: 'GET'
+                }).done(function (resp) {
+                    if (resp && resp.status && resp.status === "success") {
+                        onSignOut()
+                        window.location = "#!home"
+                    } else {
+                        if (resp && resp.message) {
+                            alert("Error: " + resp.status)
+                        }
+                    }
+                }).fail(function () {
+                    alert("Fatal error")
+                })
+            }
+            setTimeout(preloaderHide, 500)
         }
     })
 </script>

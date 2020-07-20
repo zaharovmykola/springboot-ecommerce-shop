@@ -14,7 +14,7 @@
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <input id="password" name="password" type="text" class="validate" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}">
+                                    <input id="password" name="password" type="password" class="validate" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}">
                                     <label for="password">Password (8-16 characters, including at least one uppercase, one lowercase, and one digit)</label>
                                 </div>
                             </div>
@@ -70,21 +70,6 @@
                             alert("Unknown error");
                         }
                     })
-                    /* const formData = $(this).serialize()
-                    $.ajax({
-                        url: 'login'
-                        , data: formData
-                        , type: 'POST'
-                    }).done(function (resp) {
-                        if (resp.error !== '') {
-                            alert('error: ' + resp.error)
-                        } else {
-                            alert("Your credentials are: " + resp.data[0].login + "; " + resp.data[0].password)
-                            $signUpForm[0].reset()
-                        }
-                    }).fail(function () {
-                        alert("error")
-                    })*/
                 }
             })
             setTimeout(preloaderHide, 500)

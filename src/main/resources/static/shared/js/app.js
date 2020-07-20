@@ -14,7 +14,7 @@
         // activate the page  
         $(document.body).attr("page", pageName)
             .find("section").fadeOut(600).removeClass("active")
-            .filter("section#" + pageName).addClass("active").fadeIn(600)
+            .filter("section#" + pageName).fadeIn(600).addClass("active")
     }
     // Page Fetcher
     function app (pageName, param) {
@@ -45,11 +45,21 @@
     }
     function onhashchange() {
         let hash = location.hash || "#!home"
-        const re = /#!([-0-9A-Za-z]+)(\:(.+))?/
+        let re = /#!([-0-9A-Za-z]+)(\:(.+))?/
         const match = re.exec(hash)
-        hash = match[1]
-        const param = match[3]
-        app(hash, param) // navigate to the page
+        if (match){
+            hash = match[1]
+            const param = match[3]
+            app(hash, param) // navigate to the page
+        } else {
+            re = /#([-0-9A-Za-z]+)(\:(.+))?/
+            const match = re.exec(hash)
+            if (match){
+                hash = match[1]
+                const param = match[3]
+                app(hash, param) // navigate to the page
+            }
+        }
     }
     $(window).hashchange(onhashchange) // attach hashchange handler
     window.app = app // setup the app as global object

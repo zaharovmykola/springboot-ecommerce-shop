@@ -4,7 +4,32 @@
         const $page = $(this)
         const $root = $page.find('#shopping-root')
         return function (param) {
-            $root.html('<h1>Shopping page</h1>')
+            $.ajax({
+                url: "api/categories"
+                , type: 'GET'
+            }).done(function (resp) {
+                let template
+                if (resp && resp.status === 'success') {
+                    //Готовим шаблон с местами для подстановки данных
+                    template = Hogan.compile(
+                        `<ul>
+                            {{#data}}
+                            <li>
+                                <a id="{{id}}" href="#!"/>{{name}}</a>
+                            </li>
+                            {{/data}}
+                        </ul>`
+                    )
+                } else {
+                    template = Hogan.compile(
+                        '<span>Error. Status: {{status}}</span>'
+                    )
+                }
+                //Заполняем шаблон данными и помещаем на веб-страницу
+                $root.html(template.render(resp))
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                $('#shopping-root').html('<span>Error. Status: ' + jqXHR + '</span>');
+            });
         }
     })
 </script>

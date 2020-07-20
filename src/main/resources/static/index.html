@@ -3,30 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <title>Simple SPA</title>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- css-файл библиотеки веб-компонент в стиле Material Design -->
+    <link rel="stylesheet" href="shared/css/materialize.min.css"/>
+    <!-- Общие пользовательские стили -->
+    <link rel="stylesheet" href="shared/css/custom.css"/>
 </head>
 <body>
-<!--    <section id="home" class="active" data-src="shared/pages/home.htm"></section>-->
-<!--    <section id="shopping" data-src="shared/pages/shopping.htm"></section>-->
-<!--    <script src="shared/js/jquery-3.3.1.min.js"></script>-->
-<!--    <script src="shared/js/jquery-hashchange.js"></script>-->
-<!--    <script src="shared/js/hogan-3.0.2.min.js"></script>-->
-<!--    <script src="shared/js/app.js"></script>-->
-    <script>
-        fetch('http://localhost:8090/eCommerceShop/api/auth/roles',
-            {
-                'method':'get'
-            })
-            // Выполнить, когда результат запроса на сервер будет получен
-            .then((response) => {
-                console.log(response)
-                return response.json()
-            })
-            // Выполнить, когда тело ответа от сервера (в формате json) будет превращено
-            // в объект
-            .then((data) => {
-                console.log(data)
-            })
-
-    </script>
+<!-- Заставка перед загрузкой (разноцветный вариант) -->
+<div class="preloader-wrapper big active">
+    <div class="spinner-layer spinner-blue">
+        <div class="circle-clipper left">
+            <div class="circle"></div>
+        </div>
+        <div class="gap-patch">
+            <div class="circle"></div>
+        </div>
+        <div class="circle-clipper right">
+            <div class="circle"></div>
+        </div>
+    </div>
+    <div class="spinner-layer spinner-red">
+        <div class="circle-clipper left">
+            <div class="circle"></div>
+        </div>
+        <div class="gap-patch">
+            <div class="circle"></div>
+        </div>
+        <div class="circle-clipper right">
+            <div class="circle"></div>
+        </div>
+    </div>
+    <div class="spinner-layer spinner-yellow">
+        <div class="circle-clipper left">
+            <div class="circle"></div>
+        </div>
+        <div class="gap-patch">
+            <div class="circle"></div>
+        </div>
+        <div class="circle-clipper right">
+            <div class="circle"></div>
+        </div>
+    </div>
+    <div class="spinner-layer spinner-green">
+        <div class="circle-clipper left">
+            <div class="circle"></div>
+        </div>
+        <div class="gap-patch">
+            <div class="circle"></div>
+        </div>
+        <div class="circle-clipper right">
+            <div class="circle"></div>
+        </div>
+    </div>
+</div>
+<!-- Desktop navbar / Меню для настольных ПК -->
+<nav>
+    <div class="nav-wrapper">
+        <a href="#!" class="brand-logo">Logo</a>
+        <a href="#!" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="#!home">Home</a></li>
+            <li><a href="#!shopping">Shopping</a></li>
+            <li><a href="#!signup">SignUp</a></li>
+            <li><a href="#!home:out">SignOut</a></li>
+            <li><a href="#!signin">SignIn</a></li>
+            <li><a href="#!modal" class="modal-trigger cart"><i class="material-icons">shopping_cart</i></a></li>
+        </ul>
+    </div>
+</nav>
+<ul class="sidenav" id="mobile-demo">
+    <li><a href="#!home">Home</a></li>
+    <li><a href="#!shopping">Shopping</a></li>
+    <li><a href="#!signup">SignUp</a></li>
+    <li><a href="#!home:out">SignOut</a></li>
+    <li><a href="#!signin">SignIn</a></li>
+    <li><a href="#!modal" class="modal-trigger cart"><i class="material-icons">shopping_cart</i></a></li>
+</ul>
+<!-- Hidden popup window / Скрытое всплывающее окно -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <!-- Content Placeholder / Место для динамического добавления контента на клиенте -->
+    </div>
+    <div class="modal-footer">
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Ok</a>
+    </div>
+</div>
+<!-- Секции для разметки разделов сайта -->
+<section id="home" class="active" data-src="shared/pages/home.htm"></section>
+<section id="shopping" data-src="shared/pages/shopping.htm"></section>
+<section id="signup" data-src="shared/pages/signup.htm"></section>
+<section id="signin" data-src="shared/pages/signin.htm"></section>
+<section id="contact" class="active" data-src="shared/pages/contact.htm"></section>
+<section id="admin" data-src="admin/pages/admin.htm"></section>
+<section id="adminunit" data-src="admin/pages/adminunit.htm"></section>
+<!-- Библиотека для упрощения работы с DOM и AJAX -->
+<script src="shared/js/jquery-3.3.1.min.js"></script>
+<!-- Библиотека для установки функции-обработчика событий
+изменения хэш-составляющей в адресной строке -->
+<script src="shared/js/jquery-hashchange.js"></script>
+<!-- Библиотека простейшего шаблонизатора для клиентской стороны приложения -->
+<script src="shared/js/hogan-3.0.2.min.js"></script>
+<!-- js-файл библиотеки веб-компонент в стиле Material Design -->
+<script src="shared/js/materialize.min.js"></script>
+<!-- Библиотека масштабирования изображения на клиентской стороне -->
+<script src="shared/js/ImageTools.js"></script>
+<!-- Сценарий загрузки представлений разделов и навигации по ним -->
+<script src="shared/js/app.js"></script>
+<!-- Общие пользовательские сценарии -->
+<script src="shared/js/custom.js"></script>
 </body>
 </html>
