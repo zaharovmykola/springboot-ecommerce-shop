@@ -6,36 +6,27 @@
         const $root = $page.find('#contact-root')
         return function (param) {
             const data =
-                {   'header': 'ECommerce-Shop - Contact',
-                    'contacts':
-                    [
-                        {
-                            'phone number': 911,
-                            'email': 'test@test.test'
-                        },
-                        {
-                            'phone number': '000',
-                            'email': 'test2@test2.test2'
-                        },
-                        {
-                            'phone number': '333',
-                            'email': 'test3@test3.test3'
-                        }
-                    ]
+                {   'header': 'ECommerce-Shop - TODOs',
+                    'todos': []
                 }
             const template = Hogan.compile(
                 `<h1>{{header}}</h1>
-                {{#contacts}}
-                    <div>Telephone: {{phone number}}</div>
-                    <div>E-mail: {{email}}</div>
-                {{/contacts}}
-                {{^contacts}}
-                    <div>Contacts List is Empty</div>
-                {{/contacts}}`
+                {{#todos}}
+                    <div>Goal: {{title}}</div>
+                    <div>Completed: {{completed}}</div>
+                {{/todos}}
+                {{^todos}}
+                    <div>TODOs List is Empty</div>
+                {{/todos}}`
             )
-            $root.html(
-                template.render(data)
-            )
+            $.get('https://jsonplaceholder.typicode.com/users/1/todos')
+                .done(responseData => {
+                    console.log(responseData)
+                    data.todos = responseData
+                    $root.html(
+                        template.render(data)
+                    )
+                })
             setTimeout(preloaderHide, 500)
         }
     })
