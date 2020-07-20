@@ -11,6 +11,7 @@ import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.UserRequestMode
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -21,6 +22,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class AuthService {
+
+    @Autowired
+    public PasswordEncoder passwordEncoder;
 
     @Autowired
     private RoleHibernateDAO roleDao;
@@ -40,7 +44,7 @@ public class AuthService {
         User user =
             User.builder()
                 .name(userRequestModel.getName())
-                .password(userRequestModel.getPassword())
+                .password(passwordEncoder.encode(userRequestModel.getPassword()))
                 .role(roleDao.findRoleByName("user"))
                 .build();
         userDao.save(user);

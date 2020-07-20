@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 
@@ -22,6 +23,9 @@ import java.util.logging.Logger;
 public class HibernateWebAuthProvider implements AuthenticationProvider {
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private UserHibernateDAO userDAO;
 
     @Override
@@ -30,16 +34,24 @@ public class HibernateWebAuthProvider implements AuthenticationProvider {
 
         String name = a.getName();
         String password = a.getCredentials().toString();
-        System.out.println(password);
         User user = null;
         try {
             user = userDAO.findUserByName(name);
-            System.out.println(user);
         } catch (Exception ex) {
             Logger.getLogger(HibernateWebAuthProvider.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        if (user != null && user.getRole() != null && user.getPassword().equals(password)) {
+        if (user != null) {
+            System.out.println(user.getPassword());
+            System.out.println(passwordEncoder.matches(password, user.getPassword()));
+        }
+
+        if (user != null
+                && user.getRole() != null
+                && passwordEncoder.matches(password, user.getPassword())
+        ) {
+            System.out.println(user.getPassword());
+            System.out.println(password);
             List<GrantedAuthority> authorities = new ArrayList<>();
             authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getName()));
             return new UsernamePasswordAuthenticationToken(name, password, authorities);
