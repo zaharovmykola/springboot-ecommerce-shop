@@ -5,14 +5,33 @@
         const $page = $(this)
         const $root = $page.find('#contact-root')
         return function (param) {
-            const data = {
-                'phone number': 911,
-                'email': 'test@test.test'
-            }
+            const data =
+                {   'header': 'ECommerce-Shop - Contact',
+                    'contacts':
+                    [
+                        {
+                            'phone number': 911,
+                            'email': 'test@test.test'
+                        },
+                        {
+                            'phone number': '000',
+                            'email': 'test2@test2.test2'
+                        },
+                        {
+                            'phone number': '333',
+                            'email': 'test3@test3.test3'
+                        }
+                    ]
+                }
             const template = Hogan.compile(
-                `<h1>ECommerce-Shop - Contact</h1>
-                 <h2>Telephone: {{phone number}}</h2>
-                 <h2>E-mail: {{email}}</h2>`
+                `<h1>{{header}}</h1>
+                {{#contacts}}
+                    <div>Telephone: {{phone number}}</div>
+                    <div>E-mail: {{email}}</div>
+                {{/contacts}}
+                {{^contacts}}
+                    <div>Contacts List is Empty</div>
+                {{/contacts}}`
             )
             $root.html(
                 template.render(data)
