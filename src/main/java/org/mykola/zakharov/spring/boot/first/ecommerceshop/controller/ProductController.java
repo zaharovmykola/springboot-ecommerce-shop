@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/product")
+@RequestMapping("/api/products")
 public class ProductController {
     @Autowired
     private ProductService service;
@@ -24,7 +24,7 @@ public class ProductController {
         return new ResponseEntity<>(service.getAll(), HttpStatus.OK);
     }
 
-    @PostMapping("/create")
+    @PostMapping("")
     public ResponseEntity<ResponseModel> create(@RequestBody ProductModel product) {
         return new ResponseEntity<>(service.create(product), HttpStatus.CREATED);
     }
@@ -43,7 +43,7 @@ public class ProductController {
         );
     }
 
-    @DeleteMapping(value = "/product/{id}")
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<ResponseModel> deleteProduct(@PathVariable Long id) {
         ResponseModel responseModel = service.delete(id);
         System.out.println(responseModel);

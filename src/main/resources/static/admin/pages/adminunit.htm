@@ -13,7 +13,7 @@
                             <div class="row">
 <!--                                а вот поле ввода инпут-->
                                 <div class="input-field col s12">
-                                    <input id="name" name="name" type="text" class="validate">
+                                    <input id="name" name="name" type="text" class="validate" required>
 <!--                                    а вот метка к полю ввода с пояснением-->
                                     <label for="name">category name</label>
                                 </div>
@@ -66,7 +66,7 @@
                         <form class="col s12">
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <input id="title" name="title" type="text" class="validate">
+                                    <input id="title" name="title" type="text" class="validate" required>
                                     <label for="title">title</label>
                                 </div>
                                 <div id="category-select" class="input-field col s12">
@@ -76,14 +76,14 @@
                                 </div>
                                 <div class="input-field col s12">
                                     <label for="description">description</label>
-                                    <textarea name="description" id="description" class="materialize-textarea"></textarea>
+                                    <textarea name="description" id="description" class="materialize-textarea" required></textarea>
                                 </div>
                                 <div class="input-field col s12">
-                                    <input id="price" name="price" type="text" class="validate">
+                                    <input id="price" name="price" type="text" class="validate" required>
                                     <label for="price">price</label>
                                 </div>
                                 <div class="input-field col s12">
-                                    <input id="quantity" name="quantity" type="text" class="validate">
+                                    <input id="quantity" name="quantity" type="text" class="validate" required>
                                     <label for="quantity">quantity</label>
                                 </div>
                                 <div class="col s12">
@@ -354,7 +354,7 @@
                                             {{#data}}
                                                 <tr>
                                                     <th scope="row">{{id}}</th>
-                                                    <td>{{name}}</td>
+                                                    <td>{{title}}</td>
                                                     <td>{{category.name}}</td>
                                                     <td>{{price}}</td>
                                                     <td>{{quantity}}</td>
@@ -467,7 +467,9 @@
                             ev.preventDefault();
 
                             // еще ето добавил по аналогии с категориями
-                            if (!$('#products-edit form')[0].checkValidity()){
+                            console.log($('#products-edit form #category-select li.selected:not(.disabled)'))
+                            if (!$('#products-edit form')[0].checkValidity()
+                                || $('#products-edit form #category-select li.selected:not(.disabled)').length === 0) {
                                 return false;
                             }
 
@@ -487,13 +489,13 @@
                             };
                             //
                             $.ajax({
-                                url: "api/product"
+                                url: "api/products"
                                 , data: JSON.stringify(formData)
                                 , type: 'POST'
                                 , dataType : "json"
                                 , contentType : "application/json"
                             }).done(function (resp) {
-                                if (resp !== undefined && resp.status === 'success') {
+                                if (resp && resp.status === 'success') {
                                     //
                                     populateProductsTable();
                                 } else {
@@ -518,7 +520,7 @@
                             $('#products-edit .selectedTableRow').find('th').text();
                         //console.log(productId);
                         $.ajax({
-                            url: "api/product/" + productId
+                            url: "api/products/" + productId
                             , type: 'DELETE'
                         }).done(function (resp) {
                             if (resp !== undefined && resp.status === 'success') {

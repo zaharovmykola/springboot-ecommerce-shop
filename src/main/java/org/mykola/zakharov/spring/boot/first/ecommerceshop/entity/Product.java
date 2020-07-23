@@ -39,8 +39,8 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private Set<Order> setOfOrders = new HashSet<>(0);
 
-    @ManyToOne(fetch = FetchType.LAZY) // выкачиватся данные будут только когда попросят
-    @JoinColumn(name = "shoppingCart_id", nullable = false)
-    private ShoppingCart shoppingCart;
+    @ManyToMany(fetch = FetchType.LAZY) // выкачиватся данные будут только когда попросят
+    @JoinColumn(name = "shoppingCart_id")
+    private Set<ShoppingCart> setOfShoppingCarts = new HashSet<>(0);
 }
 

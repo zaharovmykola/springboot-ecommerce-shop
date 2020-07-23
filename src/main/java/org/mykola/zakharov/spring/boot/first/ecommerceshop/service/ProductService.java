@@ -4,6 +4,7 @@ import org.mykola.zakharov.spring.boot.first.ecommerceshop.dao.CategoryHibernate
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.dao.ProductHibernateDAO;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.Category;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.Product;
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.CategoryModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ProductFilterModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ProductModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ResponseModel;
@@ -40,6 +41,7 @@ public class ProductService {
                     .image(productModel.getImage())
                     .category(categoryOptional.get())
                     .build();
+            System.out.println(product);
             productDao.save(product);
             return ResponseModel.builder()
                     .status(ResponseModel.SUCCESS_STATUS)
@@ -65,7 +67,12 @@ public class ProductService {
                         .price(p.getPrice())
                         .quantity(p.getQuantity())
                         .image(p.getImage())
-                        .categoryId(p.getCategory().getId())
+                        .category(
+                            CategoryModel.builder()
+                                .id(p.getCategory().getId())
+                                .name(p.getCategory().getName())
+                                .build()
+                        )
                         .build()
                 )
                 .collect(Collectors.toList());

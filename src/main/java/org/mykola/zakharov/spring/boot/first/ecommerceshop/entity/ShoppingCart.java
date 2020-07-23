@@ -25,6 +25,7 @@ public class ShoppingCart {
     @PrimaryKeyJoinColumn // это нужно указывать для одного из один-один
     private User user;
 
-    @OneToMany(mappedBy = "shoppingCart")
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinColumn(columnDefinition = "product_id")
     private Set<Product> setOfProducts = new HashSet<>(0);  // here is problem - solve it
 }

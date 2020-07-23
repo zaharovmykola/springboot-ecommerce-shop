@@ -19,4 +19,5 @@ public class ProductModel {
     private Integer quantity;
     private String image;
     public Long categoryId;
+    public CategoryModel category;
 }
