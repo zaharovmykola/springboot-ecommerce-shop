@@ -9,13 +9,17 @@
                     <span class="card-title">Category</span>
                     <div class="row">
                         <form class="col s12">
+<!--                            образовываем ряд с полем ввода-->
                             <div class="row">
+<!--                                а вот поле ввода инпут-->
                                 <div class="input-field col s12">
                                     <input id="name" name="name" type="text" class="validate">
+<!--                                    а вот метка к полю ввода с пояснением-->
                                     <label for="name">category name</label>
                                 </div>
                             </div>
                             <div class="row">
+<!--                                и другой ряд с кнопкой-->
                                 <button class="btn waves-effect waves-light" type="submit" name="action">
                                     Submit
                                     <i class="material-icons right">send</i>
@@ -141,32 +145,50 @@
             switch (param) {
                 // Логика администрирования категорий
                 case "categories": {
+                    // попали в категорис
+                    // с помощбю джейквери находим див
+                    // включаем ему видивость дисплей_блок
                     $('#categories-edit').css('display', 'block');
+                    // там находим разметку редактирования - и им дисплей-нон
                     $('#products-edit').css('display', 'none');
                     // Заполнение таблицы категорий
                     let populateCategoriesTable = function () {
+                        // подготвливаем переменную под шаблон
+                        // в зависимости от ответа шаблон будет разный
+                        // в обвете - либо коллекция данных либо ничего нет либо ошибка
                         let template
                         // Асинхронный запрос на сервер для получения
                         // данных о категориях
+                        // делаем запрос гет более низкоуровневой функцией ajax джейквери
                         $.ajax({
                             url: "api/categories"
                             , type: 'GET'
+                            // ответ джет функция которую передали мы в done
+                            // ответ получаем в обект resp
+                            // в данном месте рассчитываем что все хорошо - что ответ получили
                         }).done(function (resp) {
+                            // переверяем если чтото вообще есть там и равно ли слово слову success
                             if (resp && resp.status === 'success') {
                                 template = Hogan.compile(
+                                    // подготовливаем шаблон
                                    `<table class="table">
                                         <thead>
                                             <tr>
+<!--                                            имена двух колонок-->
                                                 <th>ID</th>
                                                 <th>name</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {{#data}}
-                                            <tr>
-                                                <th scope="row">{{id}}</th>
-                                                <td>{{name}}</td>
-                                            </tr>
+                                                <tr>
+<!--                                                    th это ячейки которые формируют заготовок таблицы-->
+<!--                                                         но деоаем их ячейками строк -->
+<!--                                                        для этого пишем scope="row"-->
+                                                    <th scope="row">{{id}}</th>
+    <!--                                                 td это ячейки который формируют строки-->
+                                                    <td>{{name}}</td>
+                                                </tr>
                                             {{/data}}
                                             {{^data}}
                                                 <span>Categories list is empty</span>
@@ -175,17 +197,29 @@
                                     </table>`
                                 );
                                 //Заполняем шаблон данными и помещаем на веб-страницу
+                                // включаем заполение шаблона данными и всталяем э то на html-страницу
                                 $('#categories-container').html(template.render(resp));
+                                // в самом начале кнопочки ediт и delete гасим если ни один пункт не выделен
                                 $("#editCategory, #deleteCategory").attr('disabled', '');
                                 //Устанавливаем обработчик кликов на все строки таблицы кроме заголовка
+                                // находим все рядки которые не являются первой строкой
+                                // функцией unbind уничтожаем старый обработчик события на всякий случай
+                                // отвязываем со всех строк кроме первой старый обработчик
                                 $("#categories-container tr:not(:first)").unbind("click");
+                                // и вешаем новый обработчкик
                                 $("#categories-container table tr:not(:first)").click(function () {
                                     //Разблокируем кнопки, когда выбрана строка таблицы
                                     $("#editCategory, #deleteCategory").removeAttr('disabled');
                                     //Отмечаем текст выбранной строки зеленым цветом, с остальных строк выделение убираем
                                     //(оно могло быть ранее установлено на одну из строк)
+                                    // с помощью написанного спец  стиля selectedTableRow
+                                    // берем this той строки на которую кликнули
+                                    // методом джейквери addClass добавляем класс selectedTableRow чтобы зеленым покрасить
+                                    // и теперь ищем всех siblings-родсвинников и удялаю у них тот же класс стиля
+                                    // чтобы они наверняка были все чорные а один только зеленый
                                     $(this).addClass("selectedTableRow").siblings().removeClass("selectedTableRow");
                                 });
+                                // а иначе выводим на шаблон об ошибке если мы не получили данные
                             } else {
                                 template = Hogan.compile(
                                     '<span>Error. Status: {{status}}</span>'
@@ -205,22 +239,46 @@
                             }
                         })
                     }
+                    // теперь вызываю функцию заполения таблицы данными
                     populateCategoriesTable();
+                    // и программирую обработчик клика по кнопке отправить форму
                     $('#categories-edit button[type=submit]').unbind("click");
                     $('#categories-edit button[type=submit]').click(
                         function (ev) {
                             ev.preventDefault();
-                            $.ajax({
+                            // это защита формы от отправки если там все не валидные поля
+                            if (!$('#categories-edit form')[0].checkValidity()){
+                                return false;
+                            }
+                            // но если онв все-таки валидные то нацеливаем ajax-запрос на api/category
+                            $.ajax(
+                                // это все настроечный обьект запроса у джейквери
+                                {
                                 url: "api/category"
+                                    // в поле data я кладу - образовую JavaScript обьект
+                                    // и получаэтся обект с полем нейм со занчением которое ввел пользователь
+                                    // пропускаем это через JSON.stringify
+                                    // и с JS-обекта получается JSON-строка
+                                    // и эту строку подключаем в стандартное поле data
+                                    // и тогда завершен настроечний обект для запроса и запрос уходит на сервер
                                 , data: JSON.stringify({
+                                        // кладу в него поле нейм
+                                        // в етом поле нахожу поле ввода нейм в форме
+                                        // джейквери фнукцией val считываю велью
                                     'name' : $('#categories-edit input#name').val()
                                 })
+                                // тип ему ставлю пост запрос
                                 , type: 'POST'
+                                // данные отправляемые
                                 , dataType : "json"
+                                // и данные принимаемые ставлю тип json
                                 , contentType : "application/json"
+                                    // когда ответ получен, помещаем ево в resp
                             }).done(function (resp) {
                                 let template
+                                // переверяем resp, есть ли что-то в нем и равен ли success
                                 if (resp && resp.status === 'success') {
+                                    // и если success то перрисовываем всю таблицу
                                     populateCategoriesTable();
                                 } else {
                                     template = Hogan.compile(
@@ -242,15 +300,24 @@
                     );
                     //
                     $("#deleteCategory").unbind("click");
+                    // вот обработчик для кнопки делит
                     $('#deleteCategory').click(function (ev) {
+                        // preventDefault - предотвращаем стандартное поведение веб-страницы
                         ev.preventDefault();
                         let catId =
+                            // находим ту строку которая сейчас выделена зеленым
+                            // и в этой строке находим елемент th и с него считываем текст функцией text
+                            // th это тейблхедер, заголовок получается
+                            // так как знаем что th у нас только одна строка
                             $('#categories-edit .selectedTableRow').find('th').text();
                         let template;
+                        // делаем ajax запрос на заранее подготовлениий ендпонит делит
+                        // туда передаем идентификатор catId к адресной строке приклееваем
                         $.ajax({
                             url: "api/category/" + catId
                             , dataType : "json"
                             , type: 'DELETE'
+                            // а это получаем в ответ
                         }).done(function (resp) {
                             if (resp && resp.status === 'success') {
                                 populateCategoriesTable()
@@ -398,6 +465,12 @@
                     $('#products-edit button[type=submit]').click(
                         function (ev) {
                             ev.preventDefault();
+
+                            // еще ето добавил по аналогии с категориями
+                            if (!$('#products-edit form')[0].checkValidity()){
+                                return false;
+                            }
+
                             let selectedCategoryIndex =
                                 $('#products-edit form #category-select li.selected').index();
                             let selectedCategoryId =

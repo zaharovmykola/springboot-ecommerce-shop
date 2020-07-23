@@ -32,6 +32,7 @@ public class CategoryService {
     }
 
     public ResponseModel getAll() {
+//        вызываем метод findAll с Sort по колонке id в обратном порядке descending
         List<Category> categories = dao.findAll(Sort.by("id").descending());
         List<CategoryModel> categoryModels =
             categories.stream()
