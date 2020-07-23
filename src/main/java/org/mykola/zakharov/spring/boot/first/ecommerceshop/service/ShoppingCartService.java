@@ -40,7 +40,7 @@ public class ShoppingCartService {
                     .price(product.getPrice())
                     .quantity(product.getQuantity())
                     .image(product.getImage())
-                    .category_id(product.getCategory().getId())
+                    .categoryId(product.getCategory().getId())
                     .build()
                     )
                     .collect(Collectors.toList());

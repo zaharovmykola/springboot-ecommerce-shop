@@ -1,16 +1,16 @@
-package org.tyaa.demo.springboot.simplespa.service;
+package org.mykola.zakharov.spring.boot.first.ecommerceshop.service;
 
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.dao.CategoryHibernateDAO;
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.dao.ProductHibernateDAO;
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.Category;
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.Product;
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ProductFilterModel;
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ProductModel;
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.tyaa.demo.springboot.simplespa.dao.CategoryHibernateDAO;
-import org.tyaa.demo.springboot.simplespa.dao.ProductHibernateDAO;
-import org.tyaa.demo.springboot.simplespa.entity.Category;
-import org.tyaa.demo.springboot.simplespa.entity.Product;
-import org.tyaa.demo.springboot.simplespa.model.CategoryModel;
-import org.tyaa.demo.springboot.simplespa.model.ProductFilterModel;
-import org.tyaa.demo.springboot.simplespa.model.ProductModel;
-import org.tyaa.demo.springboot.simplespa.model.ResponseModel;
+
 
 import javax.transaction.Transactional;
 import java.util.List;

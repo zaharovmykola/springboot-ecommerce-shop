@@ -22,7 +22,7 @@ public class User {
 
     @Column(name="name", length=25, unique = true, nullable = false)
     private String name;
-    @Column(name = "password", nullable = false, length = 16)
+    @Column(name = "password", nullable = false)
     private String password;
 
     @ManyToOne(fetch = FetchType.LAZY) // выкачиватся данные будут только когда попросят
