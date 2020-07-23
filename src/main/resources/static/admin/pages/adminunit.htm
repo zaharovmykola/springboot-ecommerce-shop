@@ -44,8 +44,14 @@
                         <div class="card-stacked">
                             <div class="card-content">
                                 <form>
-                                    <button id="editCategory" class="waves-effect waves-light btn" type="button">Edit</button>
-                                    <button id="deleteCategory" class="waves-effect waves-light btn" type="button">Delete</button>
+                                    <button id="editCategory" class="waves-effect waves-light btn" type="button">
+                                        Edit
+                                        <i class="material-icons right">edit</i>
+                                    </button>
+                                    <button id="deleteCategory" class="waves-effect waves-light btn" type="button">
+                                        Delete
+                                        <i class="material-icons right">delete</i>
+                                    </button>
                                 </form>
                             </div>
                         </div>
@@ -126,8 +132,14 @@
                         <div class="card-stacked">
                             <div class="card-content">
                                 <form>
-                                    <button id="editProduct" class="waves-effect waves-light btn" type="button">Edit</button>
-                                    <button id="deleteProduct" class="waves-effect waves-light btn" type="button">Delete</button>
+                                    <button id="editProduct" class="waves-effect waves-light btn" type="button">
+                                        Edit
+                                        <i class="material-icons right">edit</i>
+                                    </button>
+                                    <button id="deleteProduct" class="waves-effect waves-light btn" type="button">
+                                        Delete
+                                        <i class="material-icons right">delete</i>
+                                    </button>
                                 </form>
                             </div>
                         </div>
@@ -151,6 +163,8 @@
                     $('#categories-edit').css('display', 'block');
                     // там находим разметку редактирования - и им дисплей-нон
                     $('#products-edit').css('display', 'none');
+                    const categories = []
+                    let selectedCategory = null
                     // Заполнение таблицы категорий
                     let populateCategoriesTable = function () {
                         // подготвливаем переменную под шаблон
@@ -168,7 +182,7 @@
                             // в данном месте рассчитываем что все хорошо - что ответ получили
                         }).done(function (resp) {
                             // переверяем если чтото вообще есть там и равно ли слово слову success
-                            if (resp && resp.status === 'success') {
+                                if (resp && resp.status === 'success') {
                                 template = Hogan.compile(
                                     // подготовливаем шаблон
                                    `<table class="table">
@@ -196,6 +210,10 @@
                                         </tbody>
                                     </table>`
                                 );
+                                    categories.length = 0
+                                    resp.data.forEach(category => {
+                                        categories.push(category)
+                                    })
                                 //Заполняем шаблон данными и помещаем на веб-страницу
                                 // включаем заполение шаблона данными и всталяем э то на html-страницу
                                 $('#categories-container').html(template.render(resp));
@@ -250,6 +268,7 @@
                             if (!$('#categories-edit form')[0].checkValidity()){
                                 return false;
                             }
+                            if (selectedCategory === null) {
                             // но если онв все-таки валидные то нацеливаем ajax-запрос на api/categories
                             $.ajax(
                                 // это все настроечный обьект запроса у джейквери
@@ -296,6 +315,38 @@
                                     alert("Error: " + resp.message)
                                 }
                             })
+                        } else {
+                                $.ajax({
+                                    url: "api/category/" + selectedCategory.id
+                                    , data: JSON.stringify({
+                                        'name': $('#categories-edit input#name').val()
+                                    })
+                                    , type: 'PATCH'
+                                    , dataType : "json"
+                                    , contentType : "application/json"
+                                }).done(function (resp) {
+                                    let template
+                                    if (resp && resp.status === 'success') {
+                                        populateCategoriesTable();
+                                    } else {
+                                        template = Hogan.compile(
+                                            '<span>Error. Status: {{status}}</span>'
+                                        );
+                                        let errorText = template.render(resp);
+                                    }
+                                }).fail(function (xhr, status, error) {
+                                    template = Hogan.compile(
+                                        '<span>Error. Status: ' + error + '</span>'
+                                    );
+                                    let errorText = template.render({});
+                                }).always(function (resp) {
+                                    if (resp && resp.status === "fail") {
+                                        alert("Error: " + resp.message)
+                                    }
+                                    selectedCategory = null
+                                    $("#categories-edit form")[0].reset()
+                                })
+                            }
                         }
                     );
                     //
@@ -326,12 +377,23 @@
                             }
                         })
                     });
+                    $("#editCategory").unbind("click");
+                    $('#editCategory').click(function (ev) {
+                        ev.preventDefault();
+                        const selectedCategoryId =
+                            $('#categories-edit .selectedTableRow').find('th').text();
+                        selectedCategory =
+                            categories.filter(category => category.id == selectedCategoryId)[0];
+                        $('#categories-edit input#name').val(selectedCategory.name);
+                    });
                     break;
                 }
                 //Логика администрирования наименований товаров
                 case "products": {
                     $('#products-edit').css('display', 'block');
                     $('#categories-edit').css('display', 'none');
+                    const products = []
+                    let selectedProduct = null
                     //Get n render products table
                     let populateProductsTable = function () {
                         $.ajax({
@@ -366,6 +428,10 @@
                                         </tbody>
                                     </table>`
                                 );
+                                products.length = 0
+                                resp.data.forEach(product => {
+                                    products.push(product)
+                                })
                                 //Заполняем шаблон данными и помещаем на веб-страницу
                                 $('#products-container').html(template.render(resp));
                                 $("#editProduct, #deleteProduct").attr('disabled', '');
@@ -488,29 +554,57 @@
                                 , 'image' : imageBase64
                             };
                             //
-                            $.ajax({
-                                url: "api/products"
-                                , data: JSON.stringify(formData)
-                                , type: 'POST'
-                                , dataType : "json"
-                                , contentType : "application/json"
-                            }).done(function (resp) {
-                                if (resp && resp.status === 'success') {
-                                    //
-                                    populateProductsTable();
-                                } else {
-                                    template = Hogan.compile(
-                                        '<span>Error. Status: {{status}}</span>'
-                                    );
-                                    let errorText = template.render(resp);
-                                }
-                            }).fail(function (jqXHR, textStatus, errorThrown) {
-                                alert("Error: " + jqXHR);
-                            }).always(function (resp) {
-                                if (resp && resp.status === "fail") {
-                                    alert("Error: " + resp.message)
-                                }
-                            })
+                            if (selectedProduct === null) {
+                                $.ajax({
+                                    url: "api/products"
+                                    , data: JSON.stringify(formData)
+                                    , type: 'POST'
+                                    , dataType : "json"
+                                    , contentType : "application/json"
+                                }).done(function (resp) {
+                                    if (resp && resp.status === 'success') {
+                                        //
+                                        populateProductsTable();
+                                    } else {
+                                        template = Hogan.compile(
+                                            '<span>Error. Status: {{status}}</span>'
+                                        );
+                                        let errorText = template.render(resp);
+                                    }
+                                }).fail(function (jqXHR, textStatus, errorThrown) {
+                                    alert("Error: " + jqXHR);
+                                }).always(function (resp) {
+                                    if (resp && resp.status === "fail") {
+                                        alert("Error: " + resp.message)
+                                    }
+                                })
+                            } else {
+                                $.ajax({
+                                    url: "api/product/" + selectedProduct.id
+                                    , data: JSON.stringify(formData)
+                                    , type: 'PATCH'
+                                    , dataType : "json"
+                                    , contentType : "application/json"
+                                }).done(function (resp) {
+                                    if (resp && resp.status === 'success') {
+                                        //
+                                        populateProductsTable();
+                                    } else {
+                                        template = Hogan.compile(
+                                            '<span>Error. Status: {{status}}</span>'
+                                        );
+                                        let errorText = template.render(resp);
+                                    }
+                                }).fail(function (jqXHR, textStatus, errorThrown) {
+                                    alert("Error: " + jqXHR);
+                                }).always(function (resp) {
+                                    if (resp && resp.status === "fail") {
+                                        alert("Error: " + resp.message)
+                                    }
+                                    selectedProduct = null
+                                    $("#products-edit form")[0].reset()
+                                })
+                            }
                         }
                     );
                     $('#deleteProduct').unbind("click");
@@ -538,6 +632,21 @@
                                 alert("Error: " + resp.message)
                             }
                         })
+                    });
+                    $("#editProduct").unbind("click");
+                    $('#editProduct').click(function (ev) {
+                        ev.preventDefault();
+                        const selectedProductId =
+                            $('#products-edit .selectedTableRow').find('th').text();
+                        console.log('selectedProductId', selectedProductId)
+                        selectedProduct =
+                            products.filter(product => product.id == selectedProductId)[0];
+                        console.log('products', products)
+                        console.log('selectedProduct', selectedProduct)
+                        $('#products-edit input#title').val(selectedProduct.title);
+                        $('#products-edit textarea#description').val(selectedProduct.description);
+                        $('#products-edit input#quantity').val(selectedProduct.quantity);
+                        $('#products-edit input#price').val(selectedProduct.price);
                     });
                     break;
                 }

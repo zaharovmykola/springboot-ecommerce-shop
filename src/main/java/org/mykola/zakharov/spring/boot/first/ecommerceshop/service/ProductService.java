@@ -55,6 +55,34 @@ public class ProductService {
         }
     }
 
+    public ResponseModel update(ProductModel productModel) {
+        Optional<Category> categoryOptional
+                = categoryDao.findById(productModel.getCategoryId());
+        if(categoryOptional.isPresent()){
+            Product category =
+                    Product.builder()
+                            .id(productModel.getId())
+                            .name(productModel.getTitle())
+                            .description(productModel.getDescription())
+                            .price(productModel.getPrice())
+                            .quantity(productModel.getQuantity())
+                            .category(categoryOptional.get())
+                            .build();
+            productDao.save(category);
+            // Demo Logging
+            System.out.println(String.format("Category %s Updated", category.getName()));
+            return ResponseModel.builder()
+                    .status(ResponseModel.SUCCESS_STATUS)
+                    .message(String.format("Category %s Updated", category.getName()))
+                    .build();
+        } else {
+            return ResponseModel.builder()
+                    .status(ResponseModel.FAIL_STATUS)
+                    .message(String.format("Category #%d Not Found", productModel.getCategoryId()))
+                    .build();
+        }
+    }
+
     public ResponseModel getAll() {
         List<Product> products = productDao.findAll(Sort.by("id").descending());
         List<ProductModel> productModels =

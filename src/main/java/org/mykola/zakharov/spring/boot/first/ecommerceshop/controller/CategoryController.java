@@ -26,6 +26,12 @@ public class CategoryController {
         return new ResponseEntity<>(service.create(category), HttpStatus.CREATED);
     }
 
+    @PatchMapping(value = "/category/{id}")
+    public ResponseEntity<ResponseModel> update(@PathVariable Long id, @RequestBody CategoryModel category) {
+        category.setId(id);
+        return new ResponseEntity<>(service.update(category), HttpStatus.OK);
+    }
+
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<ResponseModel> deleteCategory(@PathVariable Long id) {
         ResponseModel responseModel = service.delete(id);

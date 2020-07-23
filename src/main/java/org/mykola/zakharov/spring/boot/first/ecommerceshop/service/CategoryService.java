@@ -25,10 +25,27 @@ public class CategoryService {
         Category category =
             Category.builder().name(categoryModel.getName()).build();
         dao.save(category);
+        // Demo Logging
+        System.out.println(String.format("Category %s Created", category.getName()));
         return ResponseModel.builder()
             .status(ResponseModel.SUCCESS_STATUS)
             .message(String.format("Category %s Created", category.getName()))
             .build();
+    }
+
+    public ResponseModel update(CategoryModel categoryModel) {
+        Category category =
+                Category.builder()
+                        .id(categoryModel.getId())
+                        .name(categoryModel.getName())
+                        .build();
+        dao.save(category);
+        // Demo Logging
+        System.out.println(String.format("Category %s Updated", category.getName()));
+        return ResponseModel.builder()
+                .status(ResponseModel.SUCCESS_STATUS)
+                .message(String.format("Category %s Updated", category.getName()))
+                .build();
     }
 
     public ResponseModel getAll() {
