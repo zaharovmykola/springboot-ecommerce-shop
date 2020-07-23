@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/category")
+@RequestMapping("/api/categories")
 public class CategoryController {
     @Autowired
     private CategoryService service;
@@ -21,12 +21,12 @@ public class CategoryController {
         return new ResponseEntity<>(service.getAll(), HttpStatus.OK);
     }
 
-    @PostMapping("/create")
+    @PostMapping("")
     public ResponseEntity<ResponseModel> create(@RequestBody CategoryModel category) {
         return new ResponseEntity<>(service.create(category), HttpStatus.CREATED);
     }
 
-    @DeleteMapping(value = "/category/{id}")
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<ResponseModel> deleteCategory(@PathVariable Long id) {
         ResponseModel responseModel = service.delete(id);
         System.out.println(responseModel);

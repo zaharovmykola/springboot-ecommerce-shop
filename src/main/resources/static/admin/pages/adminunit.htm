@@ -250,11 +250,11 @@
                             if (!$('#categories-edit form')[0].checkValidity()){
                                 return false;
                             }
-                            // но если онв все-таки валидные то нацеливаем ajax-запрос на api/category
+                            // но если онв все-таки валидные то нацеливаем ajax-запрос на api/categories
                             $.ajax(
                                 // это все настроечный обьект запроса у джейквери
                                 {
-                                url: "api/category"
+                                url: "api/categories"
                                     // в поле data я кладу - образовую JavaScript обьект
                                     // и получаэтся обект с полем нейм со занчением которое ввел пользователь
                                     // пропускаем это через JSON.stringify
@@ -265,7 +265,7 @@
                                         // кладу в него поле нейм
                                         // в етом поле нахожу поле ввода нейм в форме
                                         // джейквери фнукцией val считываю велью
-                                    'name' : $('#categories-edit input#name').val()
+                                    'name': $('#categories-edit input#name').val()
                                 })
                                 // тип ему ставлю пост запрос
                                 , type: 'POST'
@@ -314,7 +314,7 @@
                         // делаем ajax запрос на заранее подготовлениий ендпонит делит
                         // туда передаем идентификатор catId к адресной строке приклееваем
                         $.ajax({
-                            url: "api/category/" + catId
+                            url: "api/categories/" + catId
                             , dataType : "json"
                             , type: 'DELETE'
                             // а это получаем в ответ
