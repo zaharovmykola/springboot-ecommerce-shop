@@ -13,7 +13,7 @@
                             <div class="row">
 <!--                                а вот поле ввода инпут-->
                                 <div class="input-field col s12">
-                                    <input id="name" name="name" type="text" class="validate" required>
+                                    <input id="name" name="name" type="text" class="validate" required pattern="^[A-zА-я0-9\s]{1,25}$">
 <!--                                    а вот метка к полю ввода с пояснением-->
                                     <label for="name">category name</label>
                                 </div>
@@ -210,6 +210,9 @@
                                         </tbody>
                                     </table>`
                                 );
+                                    const respString =
+                                        decodeURIComponent(JSON.stringify(resp).replace(/(%2E)/ig, "%20"));
+                                    resp = JSON.parse(respString);
                                     categories.length = 0
                                     resp.data.forEach(category => {
                                         categories.push(category)
@@ -284,7 +287,7 @@
                                         // кладу в него поле нейм
                                         // в етом поле нахожу поле ввода нейм в форме
                                         // джейквери фнукцией val считываю велью
-                                    'name': $('#categories-edit input#name').val()
+                                    'name': encodeURIComponent($('#categories-edit input#name').val())
                                 })
                                 // тип ему ставлю пост запрос
                                 , type: 'POST'
@@ -319,7 +322,7 @@
                                 $.ajax({
                                     url: "api/categories/" + selectedCategory.id
                                     , data: JSON.stringify({
-                                        'name': $('#categories-edit input#name').val()
+                                        'name': encodeURIComponent($('#categories-edit input#name').val())
                                     })
                                     , type: 'PATCH'
                                     , dataType : "json"
@@ -428,6 +431,9 @@
                                         </tbody>
                                     </table>`
                                 );
+                                const respString =
+                                    decodeURIComponent(JSON.stringify(resp).replace(/(%2E)/ig, "%20"));
+                                resp = JSON.parse(respString);
                                 products.length = 0
                                 resp.data.forEach(product => {
                                     products.push(product)
@@ -487,6 +493,9 @@
                                         {{/data}}
                                     </select>`
                                 );
+                                const respString =
+                                    decodeURIComponent(JSON.stringify(resp).replace(/(%2E)/ig, "%20"));
+                                resp = JSON.parse(respString);
                                 //Заполняем шаблон данными и помещаем на веб-страницу
                                 $('#category-select').html(template.render(resp));
                                 $('#category-select select').formSelect();
