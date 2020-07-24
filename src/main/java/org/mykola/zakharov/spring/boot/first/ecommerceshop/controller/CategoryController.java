@@ -26,7 +26,7 @@ public class CategoryController {
         return new ResponseEntity<>(service.create(category), HttpStatus.CREATED);
     }
 
-    @PatchMapping(value = "/category/{id}")
+    @PatchMapping(value = "/{id}")
     public ResponseEntity<ResponseModel> update(@PathVariable Long id, @RequestBody CategoryModel category) {
         category.setId(id);
         return new ResponseEntity<>(service.update(category), HttpStatus.OK);
