@@ -429,6 +429,9 @@
                                     </table>`
                                 );
                                 products.length = 0
+                                const respString =
+                                    decodeURIComponent(JSON.stringify(resp).replace(/(%2E)/ig, "%20"));
+                                resp = JSON.parse(respString);
                                 resp.data.forEach(product => {
                                     products.push(product)
                                 })
@@ -580,7 +583,7 @@
                                 })
                             } else {
                                 $.ajax({
-                                    url: "api/product/" + selectedProduct.id
+                                    url: "api/products/" + selectedProduct.id
                                     , data: JSON.stringify(formData)
                                     , type: 'PATCH'
                                     , dataType : "json"

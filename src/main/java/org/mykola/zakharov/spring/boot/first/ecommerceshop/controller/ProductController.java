@@ -29,7 +29,7 @@ public class ProductController {
         return new ResponseEntity<>(service.create(product), HttpStatus.CREATED);
     }
 
-    @PatchMapping(value = "/product/{id}")
+    @PatchMapping(value = "/{id}")
     public ResponseEntity<ResponseModel> update(@PathVariable Long id, @RequestBody ProductModel product) {
         product.setId(id);
         return new ResponseEntity<>(service.update(product), HttpStatus.OK);
