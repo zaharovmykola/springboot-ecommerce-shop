@@ -23,7 +23,9 @@ public class CategoryService {
 
     public ResponseModel create(CategoryModel categoryModel) {
         Category category =
-            Category.builder().name(categoryModel.getName()).build();
+            Category.builder()
+                    .name(categoryModel.getName().trim())
+                    .build();
         dao.save(category);
         // Demo Logging
         System.out.println(String.format("Category %s Created", category.getName()));
@@ -37,7 +39,7 @@ public class CategoryService {
         Category category =
                 Category.builder()
                         .id(categoryModel.getId())
-                        .name(categoryModel.getName())
+                        .name(categoryModel.getName().trim())
                         .build();
         dao.save(category);
         // Demo Logging
@@ -56,7 +58,7 @@ public class CategoryService {
             .map(c ->
                 CategoryModel.builder()
                     .id(c.getId())
-                    .name(c.getName())
+                    .name(c.getName().trim())
                     .build()
             )
             .collect(Collectors.toList());

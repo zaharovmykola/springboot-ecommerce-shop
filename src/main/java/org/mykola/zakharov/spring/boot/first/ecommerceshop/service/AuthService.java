@@ -43,8 +43,8 @@ public class AuthService {
     public ResponseModel createUser(UserRequestModel userRequestModel) {
         User user =
             User.builder()
-                .name(userRequestModel.getName())
-                .password(passwordEncoder.encode(userRequestModel.getPassword()))
+                .name(userRequestModel.getName().trim())
+                .password(passwordEncoder.encode(userRequestModel.getPassword().trim()))
                 .role(roleDao.findRoleByName("user"))
                 .build();
         userDao.save(user);
@@ -61,7 +61,7 @@ public class AuthService {
             roles.stream()
                 .map((r) -> RoleModel.builder()
                     .id(r.getId())
-                    .name(r.getName())
+                    .name(r.getName().trim())
                     .build())
                 .collect(Collectors.toList());
         return ResponseModel.builder()
@@ -79,7 +79,7 @@ public class AuthService {
             List<UserModel> userModels =
                 role.getSetOfUsers().stream().map(user ->
                     UserModel.builder()
-                        .name(user.getName())
+                        .name(user.getName().trim())
                         .roleId(user.getRole().getId())
                         .build()
                 )
@@ -117,7 +117,7 @@ public class AuthService {
         ResponseModel response = new ResponseModel();
         if (authentication != null && authentication.isAuthenticated()) {
             UserModel userModel = UserModel.builder()
-                    .name(authentication.getName())
+                    .name(authentication.getName().trim())
                     .build();
             response.setStatus(ResponseModel.SUCCESS_STATUS);
             response.setMessage(String.format("User %s signed in", userModel.getName()));

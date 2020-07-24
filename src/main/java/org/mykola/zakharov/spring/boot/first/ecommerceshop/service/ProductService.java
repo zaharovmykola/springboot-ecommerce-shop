@@ -34,8 +34,8 @@ public class ProductService {
         if(categoryOptional.isPresent()){
             Product product =
                 Product.builder()
-                    .name(productModel.getTitle())
-                    .description(productModel.getDescription())
+                    .name(productModel.getTitle().trim())
+                    .description(productModel.getDescription().trim())
                     .price(productModel.getPrice())
                     .quantity(productModel.getQuantity())
                     .image(productModel.getImage())
@@ -62,8 +62,8 @@ public class ProductService {
             Product category =
                     Product.builder()
                             .id(productModel.getId())
-                            .name(productModel.getTitle())
-                            .description(productModel.getDescription())
+                            .name(productModel.getTitle().trim())
+                            .description(productModel.getDescription().trim())
                             .price(productModel.getPrice())
                             .quantity(productModel.getQuantity())
                             .category(categoryOptional.get())
@@ -90,15 +90,15 @@ public class ProductService {
                 .map(p ->
                     ProductModel.builder()
                         .id(p.getId())
-                        .title(p.getName())
-                        .description(p.getDescription())
+                        .title(p.getName().trim())
+                        .description(p.getDescription().trim())
                         .price(p.getPrice())
                         .quantity(p.getQuantity())
                         .image(p.getImage())
                         .category(
                             CategoryModel.builder()
                                 .id(p.getCategory().getId())
-                                .name(p.getCategory().getName())
+                                .name(p.getCategory().getName().trim())
                                 .build()
                         )
                         .build()
@@ -137,8 +137,8 @@ public class ProductService {
             products.stream()
             .map((p)->
                 ProductModel.builder()
-                    .title(p.getName())
-                    .description(p.getDescription())
+                    .title(p.getName().trim())
+                    .description(p.getDescription().trim())
                     .price(p.getPrice())
                     .quantity(p.getQuantity())
                     .categoryId(p.getCategory().getId())
