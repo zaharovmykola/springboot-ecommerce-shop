@@ -34,8 +34,8 @@ public class PaymentService {
         List<PaymentModel> paymentModels = payments.stream().map((p) ->
             PaymentModel.builder()
                 .id(p.getId())
-                .transactionId(p.getTransactionId().trim())
-                .vendor(p.getVendor().trim())
+                .transactionId(p.getTransactionId())
+                .vendor(p.getVendor())
                 .paymentDateString((new SimpleDateFormat("dd/mm/yyyy HH:mm:ss a")).format(p.getPaymentDate()))
                 .amount(p.getAmount())
                 .build()

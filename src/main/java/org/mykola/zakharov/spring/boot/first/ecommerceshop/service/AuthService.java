@@ -61,7 +61,7 @@ public class AuthService {
             roles.stream()
                 .map((r) -> RoleModel.builder()
                     .id(r.getId())
-                    .name(r.getName().trim())
+                    .name(r.getName())
                     .build())
                 .collect(Collectors.toList());
         return ResponseModel.builder()
@@ -79,7 +79,7 @@ public class AuthService {
             List<UserModel> userModels =
                 role.getSetOfUsers().stream().map(user ->
                     UserModel.builder()
-                        .name(user.getName().trim())
+                        .name(user.getName())
                         .roleId(user.getRole().getId())
                         .build()
                 )
@@ -117,7 +117,7 @@ public class AuthService {
         ResponseModel response = new ResponseModel();
         if (authentication != null && authentication.isAuthenticated()) {
             UserModel userModel = UserModel.builder()
-                    .name(authentication.getName().trim())
+                    .name(authentication.getName())
                     .build();
             response.setStatus(ResponseModel.SUCCESS_STATUS);
             response.setMessage(String.format("User %s signed in", userModel.getName()));
