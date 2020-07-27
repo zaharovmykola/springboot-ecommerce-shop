@@ -10,7 +10,6 @@ import org.mykola.zakharov.spring.boot.first.ecommerceshop.dao.CategoryHibernate
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.dao.ProductHibernateDAO;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.Category;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.Product;
-import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.CategoryModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ProductModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ResponseModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.service.CategoryService;
@@ -81,9 +80,6 @@ public class ProductServiceTest {
                         .categoryId(1L)
                         .build();
 
-        /* Optional<Category> categoryOptional =
-                categoryDAO.findById(productModel.getCategoryId()); */
-
         ResponseModel responseModel =
                 productService.create(productModel);
         // Проверка, что результат не равен null
@@ -98,19 +94,28 @@ public class ProductServiceTest {
 
     @Test
     void shouldUpdatedProductSuccessfully() {
+        Optional<Category> optionalCategory =
+                Optional.of(
+                        Category.builder()
+                                .id(1L)
+                                .name("c1")
+                                .build()
+                );
+        // что вернуть? - объект типа сущность Category
+        doReturn(
+                optionalCategory
+        ).when(categoryDAO) // откуда? - из объекта categoryDAO
+                .findById(1L); // когда? - когда в метод findById передан аргумент 1
         final ProductModel productModel =
                 ProductModel.builder()
-                        .id(Long.valueOf(1))
+                        .id(1L)
                         .title("test product 1")
                         .description("about test product 1")
                         .price(new BigDecimal(10.5))
                         .quantity(5)
                         .image(imageBase64)
-                        .categoryId(Long.valueOf(1))
+                        .categoryId(1L)
                         .build();
-
-        Optional<Category> categoryOptional =
-                categoryDAO.findById(productModel.getCategoryId());
 
         ResponseModel responseModel =
                 productService.create(productModel);
@@ -122,32 +127,39 @@ public class ProductServiceTest {
         // минимум 1 раз был вызван метод save
         verify(productDAO, atLeast(1))
                 .save(productArgument.capture());
-        verify(categoryDAO, atLeast(1))
-                .save(categoryArgument.capture());
     }
 
-//    /@Test
-//    void shouldReturnGetAll() {
-//        // Обучаем макет:
-//        // вернуть что? - результат, равный ...
-//        doReturn(
-//                ResponseModel.builder()
-//                        .status(ResponseModel.SUCCESS_STATUS)
-//                        .data(Arrays.asList(new ProductModel[] {
-//                                new ProductModel(1L, "c1", new BigDecimal(10.5), 5),
-//                                new ProductModel(2L, "c2", new BigDecimal(8.5), 7),
-//                                new ProductModel(3L, "c3", new BigDecimal(10.5), 10)
-//                        }))
-//                        .build()
-//        ).when(productServiceMock) // откуда? - из объекта categoryServiceMock
-//                .getAll(); // как результат вызова какого метода? - getAll
-//        // вызов настроенного выше метода макета, полученного из интерфейса
-//        ResponseModel responseModel =
-//                productServiceMock.getAll();
-//        assertNotNull(responseModel);
-//        assertNotNull(responseModel.getData());
-//        assertEquals(((List)responseModel.getData()).size(), 3);
-//    }
+    @Test
+    void shouldReturnGetAll() {
+        // Обучаем макет:
+        // вернуть что? - результат, равный ...
+        doReturn(
+                ResponseModel.builder()
+                        .status(ResponseModel.SUCCESS_STATUS)
+                        .data(Arrays.asList(new ProductModel[] {
+                                ProductModel.builder().
+                                        id(1L).title("c1").description("about c1").price(new BigDecimal(10.5)).
+                                        quantity(5).image(imageBase64).categoryId(1L).
+                                        build(),
+                                ProductModel.builder().
+                                        id(2L).title("c2").description("about c2").price(new BigDecimal(8.5)).
+                                        quantity(7).image(imageBase64).categoryId(2L).
+                                        build(),
+                                ProductModel.builder().
+                                        id(3L).title("c3").description("about c3").price(new BigDecimal(12.5)).
+                                        quantity(15).image(imageBase64).categoryId(3L).
+                                        build()
+                        }))
+                        .build()
+        ).when(productServiceMock) // откуда? - из объекта categoryServiceMock
+                .getAll(); // как результат вызова какого метода? - getAll
+        // вызов настроенного выше метода макета, полученного из интерфейса
+        ResponseModel responseModel =
+                productServiceMock.getAll();
+        assertNotNull(responseModel);
+        assertNotNull(responseModel.getData());
+        assertEquals(((List)responseModel.getData()).size(), 3);
+    }
 
     @Test
     void shouldThrowConstraintException() {
@@ -188,19 +200,19 @@ public class ProductServiceTest {
     @Test
     // @ExtendWith({SystemOutResource.class, SystemOutResourceParameterResolver.class})
     @ExtendWith(SystemOutResource.class)
-    void shouldCreatedProductSuccessfullyLogging(/* SystemOutResource sysOut */) {
+    void shouldProductCreationSystemOut(/* SystemOutResource sysOut */) {
         Optional<Category> optionalCategory =
-            Optional.of(
-                Category.builder()
-                    .id(1L)
-                    .name("c1")
-                    .build()
-            );
+                Optional.of(
+                        Category.builder()
+                                .id(1L)
+                                .name("c1")
+                                .build()
+                );
         // что вернуть? - объект типа сущность Category
         doReturn(
                 optionalCategory
         ).when(categoryDAO) // откуда? - из объекта categoryDAO
-        .findById(1L); // когда? - когда в метод findById передан аргумент 1
+                .findById(1L); // когда? - когда в метод findById передан аргумент 1
         final ProductModel productModel =
                 ProductModel.builder()
                         .title("test product 1")
@@ -208,7 +220,7 @@ public class ProductServiceTest {
                         .price(new BigDecimal(10.5))
                         .quantity(5)
                         .image(imageBase64)
-                        .categoryId(Long.valueOf(1))
+                        .categoryId(1L)
                         .build();
         productService.create(productModel);
         assertEquals(

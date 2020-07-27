@@ -43,40 +43,6 @@ public class CategoryServiceTest {
     ArgumentCaptor<Category> categoryArgument =
             ArgumentCaptor.forClass(Category.class);
 
-    /* @BeforeAll
-    static void setup() {
-        System.out.println("CategoryService Unit Test Started");
-    }
-    @BeforeEach
-    void init() {
-        System.out.println("Test Case Started");
-    }
-    @AfterEach
-    void tearDown() {
-        System.out.println("Test Case Finished");
-    } */
-
-
-    /* @AfterAll
-    static void done() {
-        System.out.println("CategoryService Unit Test Finished");
-    } */
-
-    /* @Test
-    void demoCase() {
-        assertTrue(2 * 2 == 4);
-    }
-    @Test
-    void demoCase2() {
-        assertTrue("Hello JUnit5".equals("Hello" + " JUnit5"));
-    } */
-
-    /* @Test
-    void demoWrongCase() {
-        // assertTrue(2 * 2 == 5);
-        assertEquals(5, 2 * 2);
-    } */
-
     @Test
     void shouldCreatedCategorySuccessfully() {
         final CategoryModel categoryModel =

@@ -58,7 +58,7 @@ public class CategoryService {
             .map(c ->
                 CategoryModel.builder()
                     .id(c.getId())
-                    .name(c.getName().trim())
+                    .name(c.getName())
                     .build()
             )
             .collect(Collectors.toList());
