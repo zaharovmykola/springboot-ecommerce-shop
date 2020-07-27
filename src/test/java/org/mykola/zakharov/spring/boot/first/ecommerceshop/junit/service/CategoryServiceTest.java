@@ -95,28 +95,28 @@ public class CategoryServiceTest {
                 .save(categoryArgument.capture());
     }
 
-//    @Test
-//    void shouldReturnGetAll() {
-//        // Обучаем макет:
-//        // вернуть что? - результат, равный ...
-//        doReturn(
-//                ResponseModel.builder()
-//                        .status(ResponseModel.SUCCESS_STATUS)
-//                        .data(Arrays.asList(new CategoryModel[] {
-//                                new CategoryModel(1L, "c1"),
-//                                new CategoryModel(2L, "c2"),
-//                                new CategoryModel(3L, "c3")
-//                        }))
-//                        .build()
-//        ).when(categoryServiceMock) // откуда? - из объекта categoryServiceMock
-//                .getAll(); // как результат вызова какого метода? - getAll
-//        // вызов настроенного выше метода макета, полученного из интерфейса
-//        ResponseModel responseModel =
-//                categoryServiceMock.getAll();
-//        assertNotNull(responseModel);
-//        assertNotNull(responseModel.getData());
-//        assertEquals(((List)responseModel.getData()).size(), 3);
-//    }
+    @Test
+    void shouldReturnGetAll() {
+        // Обучаем макет:
+        // вернуть что? - результат, равный ...
+        doReturn(
+                ResponseModel.builder()
+                        .status(ResponseModel.SUCCESS_STATUS)
+                        .data(Arrays.asList(new CategoryModel[] {
+                                CategoryModel.builder().id(1L).name("c1").build(),
+                                new CategoryModel(2L, "c2"),
+                                new CategoryModel(3L, "c3")
+                        }))
+                        .build()
+        ).when(categoryServiceMock) // откуда? - из объекта categoryServiceMock
+                .getAll(); // как результат вызова какого метода? - getAll
+        // вызов настроенного выше метода макета, полученного из интерфейса
+        ResponseModel responseModel =
+                categoryServiceMock.getAll();
+        assertNotNull(responseModel);
+        assertNotNull(responseModel.getData());
+        assertEquals(((List)responseModel.getData()).size(), 3);
+    }
 
     @Test
     void shouldThrowConstraintException() {
