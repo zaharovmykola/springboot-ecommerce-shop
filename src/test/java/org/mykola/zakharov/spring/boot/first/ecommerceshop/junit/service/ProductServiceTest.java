@@ -230,4 +230,37 @@ public class ProductServiceTest {
     }
 
     // посмотри что еще тестами не сделал
+//     try to descride delete method
+
+    @Test
+    void shouldDeletedProductSuccessfully() {
+        Optional<Product> optionalProduct =
+                Optional.of(
+                        Product.builder()
+                                .id(1L)
+                                .name("test product 1")
+                                .description("about test product 1")
+                                .price(new BigDecimal(10.5))
+                                .quantity(5)
+                                .image(imageBase64)
+                                .build()
+                );
+        doReturn(
+                optionalProduct
+        ).when(productDAO) // откуда? - из объекта categoryDAO
+                .findById(1L); // когда? - когда в метод findById передан аргумент 1
+        final Product product = optionalProduct.get();
+
+        ResponseModel responseModel =
+                productService.delete(product.getId());
+        // Проверка, что результат не равен null
+        assertNotNull(product);
+        // Проверка, что результат содержит положительный статус-код
+        assertEquals(ResponseModel.SUCCESS_STATUS, responseModel.getStatus());
+        // Проверка, что в результате вызванного выше метода (create)
+        // минимум 1 раз был вызван метод save
+        verify(productDAO, atLeast(1))
+                .delete(productArgument.capture());
+    }
+
 }
