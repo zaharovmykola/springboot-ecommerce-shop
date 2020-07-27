@@ -188,14 +188,26 @@ public class ProductServiceTest {
     @Test
     // @ExtendWith({SystemOutResource.class, SystemOutResourceParameterResolver.class})
     @ExtendWith(SystemOutResource.class)
-    void checkSuccessLogging(/* SystemOutResource sysOut */) {
+    void shouldCreatedProductSuccessfullyLogging(/* SystemOutResource sysOut */) {
+        Optional<Category> optionalCategory =
+            Optional.of(
+                Category.builder()
+                    .id(1L)
+                    .name("c1")
+                    .build()
+            );
+        // что вернуть? - объект типа сущность Category
+        doReturn(
+                optionalCategory
+        ).when(categoryDAO) // откуда? - из объекта categoryDAO
+        .findById(1L); // когда? - когда в метод findById передан аргумент 1
         final ProductModel productModel =
                 ProductModel.builder()
                         .title("test product 1")
                         .description("about test product 1")
                         .price(new BigDecimal(10.5))
                         .quantity(5)
-                        //.image()   ?????????
+                        .image(imageBase64)
                         .categoryId(Long.valueOf(1))
                         .build();
         productService.create(productModel);
