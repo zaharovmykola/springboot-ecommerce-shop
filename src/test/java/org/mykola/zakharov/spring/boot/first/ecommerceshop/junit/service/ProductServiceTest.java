@@ -10,12 +10,14 @@ import org.mykola.zakharov.spring.boot.first.ecommerceshop.dao.CategoryHibernate
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.dao.ProductHibernateDAO;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.Category;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.Product;
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ProductFilterModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ProductModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ResponseModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.service.CategoryService;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.service.ProductService;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.service.interfaces.IProductService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.TestPropertySource;
 
 import java.math.BigDecimal;
@@ -261,6 +263,48 @@ public class ProductServiceTest {
         // минимум 1 раз был вызван метод save
         verify(productDAO, atLeast(1))
                 .delete(productArgument.capture());
+    }
+
+    // try to make test for filter
+    @Test
+    void shouldFilteredProductsSuccessfully() {
+        final ProductFilterModel filter =
+                ProductFilterModel.builder()
+                    .categories(Arrays.asList(1L, 2L, 3L))
+                        .orderBy("ASC")
+                        .sortingDirection(Sort.Direction.ASC)
+                        .build();
+        // Обучаем макет:
+        // вернуть что? - результат, равный ...
+        doReturn(
+                ResponseModel.builder()
+                        .status(ResponseModel.SUCCESS_STATUS)
+                        .data(Arrays.asList(new ProductModel[] {
+                                ProductModel.builder().
+                                        id(1L).title("c1").description("about c1").price(new BigDecimal(10.5)).
+                                        quantity(5).image(imageBase64).categoryId(1L).
+                                        build(),
+                                ProductModel.builder().
+                                        id(2L).title("c2").description("about c2").price(new BigDecimal(8.5)).
+                                        quantity(7).image(imageBase64).categoryId(2L).
+                                        build(),
+                                ProductModel.builder().
+                                        id(3L).title("c3").description("about c3").price(new BigDecimal(12.5)).
+                                        quantity(15).image(imageBase64).categoryId(3L).
+                                        build()
+                        }))
+                        .build()
+        ).when(productServiceMock) // откуда? - из объекта categoryServiceMock
+                .getFiltered(filter); // как результат вызова какого метода? - getAll
+
+        ResponseModel responseModel =
+                productServiceMock.getFiltered(filter);
+        // Проверка, что результат не равен null
+        assertNotNull(responseModel);
+        assertNotNull(responseModel.getData());
+        // Проверка, что результат содержит положительный статус-код
+        assertEquals(ResponseModel.SUCCESS_STATUS, responseModel.getStatus()); // цей може не тра
+        assertEquals(((List)responseModel.getData()).size(), 3);
     }
 
 }
