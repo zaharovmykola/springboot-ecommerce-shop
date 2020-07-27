@@ -32,12 +32,12 @@ public class AuthController {
         return new ResponseEntity<>(authService.createRole(role), HttpStatus.CREATED);
     }
 
-    @DeleteMapping(value = "/role/{id}")
+    @DeleteMapping(value = "admin/role/{id}")
     public ResponseEntity<ResponseModel> deleteRole(@PathVariable Long id) {
         return new ResponseEntity<>(authService.deleteRole(id), HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/role/{id}/users")
+    @GetMapping("admin/role/{id}/users")
     public ResponseEntity<ResponseModel> getUsersByRole(@PathVariable Long id) {
         ResponseModel responseModel =
                 authService.getRoleUsers(id);

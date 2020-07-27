@@ -168,4 +168,26 @@ public class CategoryServiceTest {
                 SystemOutResource.outContent.toString().trim()
         );
     }
+
+    // посмотри что еще тестами не сделал
+    // пробую создать дополнительные тесты
+
+    @Test
+    void shouldUpdatedCategorySuccessfully() {
+        final CategoryModel categoryModel =
+                CategoryModel.builder()
+                        .id(Long.valueOf(1))
+                        .name("test category 1")
+                        .build();
+        ResponseModel responseModel =
+                categoryService.create(categoryModel);
+        // Проверка, что результат не равен null
+        assertNotNull(responseModel);
+        // Проверка, что результат содержит положительный статус-код
+        assertEquals(ResponseModel.SUCCESS_STATUS, responseModel.getStatus());
+        // Проверка, что в результате вызванного выше метода (create)
+        // минимум 1 раз был вызван метод save
+        verify(categoryDAO, atLeast(1))
+                .save(categoryArgument.capture());
+    }
 }
