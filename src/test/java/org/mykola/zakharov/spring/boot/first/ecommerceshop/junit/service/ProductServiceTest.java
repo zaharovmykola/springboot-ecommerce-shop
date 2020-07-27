@@ -80,9 +80,6 @@ public class ProductServiceTest {
                         .categoryId(1L)
                         .build();
 
-        /* Optional<Category> categoryOptional =
-                categoryDAO.findById(productModel.getCategoryId()); */
-
         ResponseModel responseModel =
                 productService.create(productModel);
         // Проверка, что результат не равен null
@@ -97,6 +94,18 @@ public class ProductServiceTest {
 
     @Test
     void shouldUpdatedProductSuccessfully() {
+        Optional<Category> optionalCategory =
+                Optional.of(
+                        Category.builder()
+                                .id(1L)
+                                .name("c1")
+                                .build()
+                );
+        // что вернуть? - объект типа сущность Category
+        doReturn(
+                optionalCategory
+        ).when(categoryDAO) // откуда? - из объекта categoryDAO
+                .findById(1L); // когда? - когда в метод findById передан аргумент 1
         final ProductModel productModel =
                 ProductModel.builder()
                         .id(1L)
@@ -105,11 +114,8 @@ public class ProductServiceTest {
                         .price(new BigDecimal(10.5))
                         .quantity(5)
                         .image(imageBase64)
-                        .categoryId(Long.valueOf(1))
+                        .categoryId(1L)
                         .build();
-
-        Optional<Category> categoryOptional =
-                categoryDAO.findById(productModel.getCategoryId());
 
         ResponseModel responseModel =
                 productService.create(productModel);
@@ -121,8 +127,6 @@ public class ProductServiceTest {
         // минимум 1 раз был вызван метод save
         verify(productDAO, atLeast(1))
                 .save(productArgument.capture());
-        verify(categoryDAO, atLeast(1))
-                .save(categoryArgument.capture());
     }
 
     @Test
