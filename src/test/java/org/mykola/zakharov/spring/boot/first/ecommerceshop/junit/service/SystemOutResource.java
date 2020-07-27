@@ -36,6 +36,9 @@ public class SystemOutResource implements BeforeEachCallback, AfterEachCallback 
         System.out.println("After checkSuccessLogging");
     }
 
+    // для получения результата - данных, предназначенных для вывода
+    // в терминал (сейчас не используется, а вместо него
+    // результат считывается напрямую из статического поля outContent)
     public String asString() {
         return outContent.toString();
     }

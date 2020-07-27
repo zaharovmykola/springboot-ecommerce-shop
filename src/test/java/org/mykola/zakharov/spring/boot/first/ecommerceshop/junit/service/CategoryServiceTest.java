@@ -122,13 +122,20 @@ public class CategoryServiceTest {
 
     @Test
     // @ExtendWith({SystemOutResource.class, SystemOutResourceParameterResolver.class})
+    // подключение объекта, выполняющего пользовательские пред- и пост-действия
+    // только для промаркированных им классов / методов
     @ExtendWith(SystemOutResource.class)
+        // кейс проверки текста, выводмого при работе тестируемого метода
+        // в терминал (например, отладочная информация, журнал операций)
     void shouldCategoryCreationSystemOut(/* SystemOutResource sysOut */) {
         final CategoryModel categoryModel =
                 CategoryModel.builder()
                         .name("test category 1")
                         .build();
         categoryService.create(categoryModel);
+        // SystemOutResource должен перехватить текст из метода create,
+        // предназначавшийся для терминала,
+        // затем сравниваем этот текст с эталоном
         assertEquals(
                 String.format("Category %s Created", categoryModel.getName().trim()),
                 SystemOutResource.outContent.toString().trim()

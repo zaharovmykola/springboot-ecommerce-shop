@@ -99,7 +99,7 @@ public class HibernateWebAuthProvider implements AuthenticationProvider, UserDet
             System.out.println(user.getPassword());
             System.out.println(password);
             List<GrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getName()));
+            authorities.add(new SimpleGrantedAuthority(/*"ROLE_" +*/ user.getRole().getName()));
             return new UsernamePasswordAuthenticationToken(name, password, authorities);
         } else {
             return null;
