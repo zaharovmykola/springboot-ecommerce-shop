@@ -16,6 +16,7 @@ import org.mykola.zakharov.spring.boot.first.ecommerceshop.service.interfaces.IC
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -163,4 +164,34 @@ public class CategoryServiceTest {
         verify(categoryDAO, atLeast(1))
                 .save(categoryArgument.capture());
     }
+
+//     try to descride delete method
+
+    @Test
+    void shouldDeletedCategorySuccessfully() {
+        Optional<Category> optionalCategory =
+                Optional.of(
+                        Category.builder()
+                                .id(1L)
+                                .name("c1")
+                                .build()
+                );
+        doReturn(
+                optionalCategory
+        ).when(categoryDAO) // откуда? - из объекта categoryDAO
+                .findById(1L); // когда? - когда в метод findById передан аргумент 1
+        final Category category = optionalCategory.get();
+
+        ResponseModel responseModel =
+                categoryService.delete(category.getId());
+        // Проверка, что результат не равен null
+        assertNotNull(category);
+        // Проверка, что результат содержит положительный статус-код
+        assertEquals(ResponseModel.SUCCESS_STATUS, responseModel.getStatus());
+        // Проверка, что в результате вызванного выше метода (create)
+        // минимум 1 раз был вызван метод save
+        verify(categoryDAO, atLeast(1))
+                .delete(categoryArgument.capture());
+    }
+
 }
