@@ -21,7 +21,7 @@ public class AuthController {
     private AuthService authService;
 
     @Secured("ROLE_ADMIN")
-    @GetMapping("/roles")
+    @GetMapping("/admin/roles")
     public ResponseEntity<ResponseModel> getAllRoles() {
         return new ResponseEntity<>(authService.getAllRoles(), HttpStatus.OK);
     }

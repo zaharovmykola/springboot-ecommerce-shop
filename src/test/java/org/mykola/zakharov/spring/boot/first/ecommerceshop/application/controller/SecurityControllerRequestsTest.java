@@ -51,7 +51,7 @@ public class SecurityControllerRequestsTest {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
-    final String baseUrl = "http://localhost:" + 8090 + "/simplespa/";
+    final String baseUrl = "http://localhost:" + 8090 + "/eCommerceShop/";
 
     @Test
     @Order(1)
