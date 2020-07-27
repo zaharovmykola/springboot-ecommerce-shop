@@ -41,7 +41,7 @@ public class ProductService {
                     .image(productModel.getImage())
                     .category(categoryOptional.get())
                     .build();
-            System.out.println(product);
+            System.out.println(String.format("Product %s Created", product.getName()));
             productDao.save(product);
             return ResponseModel.builder()
                     .status(ResponseModel.SUCCESS_STATUS)

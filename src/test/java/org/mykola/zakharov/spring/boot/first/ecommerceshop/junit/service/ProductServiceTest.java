@@ -16,6 +16,8 @@ import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ResponseModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.service.CategoryService;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.service.ProductService;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.service.interfaces.IProductService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.test.context.TestPropertySource;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -28,7 +30,11 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@TestPropertySource(locations="classpath:application.properties")
 public class ProductServiceTest {
+
+    @Value("tests.unit.strings.image-base64")
+    private String imageBase64;
 
     @Mock
     private ProductHibernateDAO productDAO;
@@ -52,18 +58,31 @@ public class ProductServiceTest {
 
     @Test
     void shouldCreatedProductSuccessfully() {
+        Optional<Category> optionalCategory =
+                Optional.of(
+                    Category.builder()
+                        .id(1L)
+                        .name("c1")
+                        .build()
+                );
+        // что вернуть? - объект типа сущность Category
+        doReturn(
+                optionalCategory
+        ).when(categoryDAO) // откуда? - из объекта categoryDAO
+        .findById(1L); // когда? - когда в метод findById передан аргумент 1
+
         final ProductModel productModel =
                 ProductModel.builder()
                         .title("test product 1")
                         .description("about test product 1")
                         .price(new BigDecimal(10.5))
                         .quantity(5)
-                        //.image()   ?????????
-                        .categoryId(Long.valueOf(1))
+                        .image(imageBase64)
+                        .categoryId(1L)
                         .build();
 
-        Optional<Category> categoryOptional =
-                categoryDAO.findById(productModel.getCategoryId());
+        /* Optional<Category> categoryOptional =
+                categoryDAO.findById(productModel.getCategoryId()); */
 
         ResponseModel responseModel =
                 productService.create(productModel);
@@ -75,8 +94,6 @@ public class ProductServiceTest {
         // минимум 1 раз был вызван метод save
         verify(productDAO, atLeast(1))
                 .save(productArgument.capture());
-        verify(categoryDAO, atLeast(1))
-                .save(categoryArgument.capture());
     }
 
     @Test
@@ -88,7 +105,7 @@ public class ProductServiceTest {
                         .description("about test product 1")
                         .price(new BigDecimal(10.5))
                         .quantity(5)
-                        //.image()   ?????????
+                        .image(imageBase64)
                         .categoryId(Long.valueOf(1))
                         .build();
 

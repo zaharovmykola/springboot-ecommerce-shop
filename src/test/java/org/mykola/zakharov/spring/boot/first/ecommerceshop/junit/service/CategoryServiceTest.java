@@ -157,7 +157,7 @@ public class CategoryServiceTest {
     @Test
     // @ExtendWith({SystemOutResource.class, SystemOutResourceParameterResolver.class})
     @ExtendWith(SystemOutResource.class)
-    void checkSuccessLogging(/* SystemOutResource sysOut */) {
+    void shouldCategoryCreationSystemOut(/* SystemOutResource sysOut */) {
         final CategoryModel categoryModel =
                 CategoryModel.builder()
                         .name("test category 1")
@@ -176,11 +176,11 @@ public class CategoryServiceTest {
     void shouldUpdatedCategorySuccessfully() {
         final CategoryModel categoryModel =
                 CategoryModel.builder()
-                        .id(Long.valueOf(1))
-                        .name("test category 1")
+                        .id(1L)
+                        .name("test category 1 - v2")
                         .build();
         ResponseModel responseModel =
-                categoryService.create(categoryModel);
+                categoryService.update(categoryModel);
         // Проверка, что результат не равен null
         assertNotNull(responseModel);
         // Проверка, что результат содержит положительный статус-код
