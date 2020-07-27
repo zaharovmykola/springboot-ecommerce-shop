@@ -39,7 +39,7 @@ public class HibernateWebAuthProvider implements AuthenticationProvider, UserDet
         return new UserDetails() {
             @Override
             public Collection<? extends GrantedAuthority> getAuthorities() {
-                return AuthorityUtils.createAuthorityList("ROLE_" + user.getRole().getName());
+                return AuthorityUtils.createAuthorityList(/*"ROLE_" +*/ user.getRole().getName());
             }
 
             @Override
