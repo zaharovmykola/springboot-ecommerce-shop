@@ -3,8 +3,6 @@ package org.mykola.zakharov.spring.boot.first.ecommerceshop.application.controll
 import org.junit.jupiter.api.Test;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.controller.CategoryController;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.CategoryModel;
-import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ResponseModel;
-import org.mykola.zakharov.spring.boot.first.ecommerceshop.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -18,9 +16,6 @@ public class CategoryControllerMethodsTest {
 
     @Autowired
     private CategoryController categoryController;
-
-    @Autowired
-    private CategoryService categoryService;
 
     @Test
     public void shouldReturnAllCategories () {
