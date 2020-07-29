@@ -70,7 +70,7 @@ public class SecurityControllerRequestsTest {
     @Order(1) // Этот кейс выполнить первым
     public void performLoginDefault() throws Exception {
         // отправить стандартный пост-запрос для входа
-        mvc.perform(formLogin())
+        mvc.perform(formLogin("/login"))
                 // и ожидать в ответ перенаправления на адрес действия рест-контроллера безопасности,
                 .andExpect((redirectedUrl("/api/auth/user/onerror")));
     }
