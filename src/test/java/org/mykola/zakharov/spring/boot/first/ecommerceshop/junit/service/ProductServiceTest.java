@@ -59,31 +59,13 @@ public class ProductServiceTest {
 
     @Test
     void shouldCreatedProductSuccessfully() {
-        Optional<Category> optionalCategory =
-                Optional.of(
-                    Category.builder()
-                        .id(1L)
-                        .name("c1")
-                        .build()
-                );
         // что вернуть? - объект типа сущность Category
-        doReturn(
-                optionalCategory
+        doReturn(returnCategoryFoldedInOptional()
         ).when(categoryDAO) // откуда? - из объекта categoryDAO
         .findById(1L); // когда? - когда в метод findById передан аргумент 1
 
-        final ProductModel productModel =
-                ProductModel.builder()
-                        .title("test product 1")
-                        .description("about test product 1")
-                        .price(new BigDecimal(10.5))
-                        .quantity(5)
-                        .image(imageBase64)
-                        .categoryId(1L)
-                        .build();
-
         ResponseModel responseModel =
-                productService.create(productModel);
+                productService.create(returnProductModelWithoutId());
         // Проверка, что результат не равен null
         assertNotNull(responseModel);
         // Проверка, что результат содержит положительный статус-код
@@ -96,16 +78,8 @@ public class ProductServiceTest {
 
     @Test
     void shouldUpdatedProductSuccessfully() {
-        Optional<Category> optionalCategory =
-                Optional.of(
-                        Category.builder()
-                                .id(1L)
-                                .name("c1")
-                                .build()
-                );
         // что вернуть? - объект типа сущность Category
-        doReturn(
-                optionalCategory
+        doReturn(returnCategoryFoldedInOptional()
         ).when(categoryDAO) // откуда? - из объекта categoryDAO
                 .findById(1L); // когда? - когда в метод findById передан аргумент 1
         final ProductModel productModel =
@@ -135,24 +109,7 @@ public class ProductServiceTest {
     void shouldReturnGetAll() {
         // Обучаем макет:
         // вернуть что? - результат, равный ...
-        doReturn(
-                ResponseModel.builder()
-                        .status(ResponseModel.SUCCESS_STATUS)
-                        .data(Arrays.asList(new ProductModel[] {
-                                ProductModel.builder().
-                                        id(1L).title("c1").description("about c1").price(new BigDecimal(10.5)).
-                                        quantity(5).image(imageBase64).categoryId(1L).
-                                        build(),
-                                ProductModel.builder().
-                                        id(2L).title("c2").description("about c2").price(new BigDecimal(8.5)).
-                                        quantity(7).image(imageBase64).categoryId(2L).
-                                        build(),
-                                ProductModel.builder().
-                                        id(3L).title("c3").description("about c3").price(new BigDecimal(12.5)).
-                                        quantity(15).image(imageBase64).categoryId(3L).
-                                        build()
-                        }))
-                        .build()
+        doReturn(returnListOfProductModels()
         ).when(productServiceMock) // откуда? - из объекта categoryServiceMock
                 .getAll(); // как результат вызова какого метода? - getAll
         // вызов настроенного выше метода макета, полученного из интерфейса
@@ -203,30 +160,14 @@ public class ProductServiceTest {
     // @ExtendWith({SystemOutResource.class, SystemOutResourceParameterResolver.class})
     @ExtendWith(SystemOutResource.class)
     void shouldProductCreationSystemOut(/* SystemOutResource sysOut */) {
-        Optional<Category> optionalCategory =
-                Optional.of(
-                        Category.builder()
-                                .id(1L)
-                                .name("c1")
-                                .build()
-                );
         // что вернуть? - объект типа сущность Category
-        doReturn(
-                optionalCategory
+        doReturn(returnCategoryFoldedInOptional()
         ).when(categoryDAO) // откуда? - из объекта categoryDAO
                 .findById(1L); // когда? - когда в метод findById передан аргумент 1
-        final ProductModel productModel =
-                ProductModel.builder()
-                        .title("test product 1")
-                        .description("about test product 1")
-                        .price(new BigDecimal(10.5))
-                        .quantity(5)
-                        .image(imageBase64)
-                        .categoryId(1L)
-                        .build();
-        productService.create(productModel);
+
+        productService.create(returnProductModelWithoutId());
         assertEquals(
-                String.format("Product %s Created", productModel.getTitle().trim()),
+                String.format("Product %s Created", returnProductModelWithoutId().getTitle().trim()),
                 SystemOutResource.outContent.toString().trim()
         );
     }
@@ -247,8 +188,7 @@ public class ProductServiceTest {
                                 .image(imageBase64)
                                 .build()
                 );
-        doReturn(
-                optionalProduct
+        doReturn(optionalProduct
         ).when(productDAO) // откуда? - из объекта categoryDAO
                 .findById(1L); // когда? - когда в метод findById передан аргумент 1
         final Product product = optionalProduct.get();
@@ -276,24 +216,7 @@ public class ProductServiceTest {
                         .build();
         // Обучаем макет:
         // вернуть что? - результат, равный ...
-        doReturn(
-                ResponseModel.builder()
-                        .status(ResponseModel.SUCCESS_STATUS)
-                        .data(Arrays.asList(new ProductModel[] {
-                                ProductModel.builder().
-                                        id(1L).title("c1").description("about c1").price(new BigDecimal(10.5)).
-                                        quantity(5).image(imageBase64).categoryId(1L).
-                                        build(),
-                                ProductModel.builder().
-                                        id(2L).title("c2").description("about c2").price(new BigDecimal(8.5)).
-                                        quantity(7).image(imageBase64).categoryId(2L).
-                                        build(),
-                                ProductModel.builder().
-                                        id(3L).title("c3").description("about c3").price(new BigDecimal(12.5)).
-                                        quantity(15).image(imageBase64).categoryId(3L).
-                                        build()
-                        }))
-                        .build()
+        doReturn(returnListOfProductModels()
         ).when(productServiceMock) // откуда? - из объекта categoryServiceMock
                 .getFiltered(filter); // как результат вызова какого метода? - getAll
 
@@ -305,6 +228,33 @@ public class ProductServiceTest {
         // Проверка, что результат содержит положительный статус-код
         assertEquals(ResponseModel.SUCCESS_STATUS, responseModel.getStatus()); // цей може не тра
         assertEquals(((List)responseModel.getData()).size(), 3);
+    }
+
+    ResponseModel returnListOfProductModels () {
+        return ResponseModel.builder()
+                .status(ResponseModel.SUCCESS_STATUS)
+                .data(Arrays.asList(new ProductModel[] {
+                        ProductModel.builder().
+                                id(1L).title("c1").description("about c1").price(new BigDecimal(10.5)).
+                                quantity(5).image(imageBase64).categoryId(1L).build(),
+                        ProductModel.builder().
+                                id(2L).title("c2").description("about c2").price(new BigDecimal(8.5)).
+                                quantity(7).image(imageBase64).categoryId(2L).build(),
+                        ProductModel.builder().
+                                id(3L).title("c3").description("about c3").price(new BigDecimal(12.5)).
+                                quantity(15).image(imageBase64).categoryId(3L).build()
+                }))
+                .build();
+    }
+
+    Optional<Category> returnCategoryFoldedInOptional () {
+        return Optional.of(Category.builder().id(1L).name("c1").build());
+    }
+
+    ProductModel returnProductModelWithoutId () {
+        return ProductModel.builder()
+                .title("test product 1").description("about test product 1")
+                .price(new BigDecimal(10.5)).quantity(5).image(imageBase64).categoryId(1L).build();
     }
 
 }

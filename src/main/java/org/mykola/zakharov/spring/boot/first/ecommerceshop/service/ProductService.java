@@ -59,7 +59,7 @@ public class ProductService {
         Optional<Category> categoryOptional
                 = categoryDao.findById(productModel.getCategoryId());
         if(categoryOptional.isPresent()){
-            Product category =
+            Product product =
                     Product.builder()
                             .id(productModel.getId())
                             .name(productModel.getTitle().trim())
@@ -68,12 +68,12 @@ public class ProductService {
                             .quantity(productModel.getQuantity())
                             .category(categoryOptional.get())
                             .build();
-            productDao.save(category);
+            productDao.save(product);
             // Demo Logging
-            System.out.println(String.format("Category %s Updated", category.getName()));
+            System.out.println(String.format("Product %s Updated", product.getName()));
             return ResponseModel.builder()
                     .status(ResponseModel.SUCCESS_STATUS)
-                    .message(String.format("Category %s Updated", category.getName()))
+                    .message(String.format("Product %s Updated", product.getName()))
                     .build();
         } else {
             return ResponseModel.builder()

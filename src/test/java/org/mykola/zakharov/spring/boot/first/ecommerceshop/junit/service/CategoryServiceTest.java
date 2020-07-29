@@ -46,12 +46,8 @@ public class CategoryServiceTest {
 
     @Test
     void shouldCreatedCategorySuccessfully() {
-        final CategoryModel categoryModel =
-                CategoryModel.builder()
-                        .name("test category 1")
-                        .build();
         ResponseModel responseModel =
-                categoryService.create(categoryModel);
+                categoryService.create(returnCategoryModel("test category 1"));
         // Проверка, что результат не равен null
         assertNotNull(responseModel);
         // Проверка, что результат содержит положительный статус-код
@@ -100,14 +96,9 @@ public class CategoryServiceTest {
                 .willThrow(new IllegalArgumentException()); // нужно выбросить исключение IllegalArgumentException
         // проверка
         try {
-            // модель, содержащая ту же слишком длинную строку
-            final CategoryModel categoryModel =
-                    CategoryModel.builder()
-                            .name(tooLongCategoryName)
-                            .build();
             // попытка выполнить на модели метод с аргументом,
-            // который должен вызвать исключение
-            categoryServiceMock.create(categoryModel);
+            // который должен вызвать исключение, моделью, содержащей ту же слишком длинную строку
+            categoryServiceMock.create(returnCategoryModel(tooLongCategoryName));
             // если исключение не выброшено -
             // объявляем данный тест-кейс не пройденным
             // с выводом сообщения о причине
@@ -129,16 +120,12 @@ public class CategoryServiceTest {
         // кейс проверки текста, выводмого при работе тестируемого метода
         // в терминал (например, отладочная информация, журнал операций)
     void shouldCategoryCreationSystemOut(/* SystemOutResource sysOut */) {
-        final CategoryModel categoryModel =
-                CategoryModel.builder()
-                        .name("test category 1")
-                        .build();
-        categoryService.create(categoryModel);
+        categoryService.create(returnCategoryModel("test category 1"));
         // SystemOutResource должен перехватить текст из метода create,
         // предназначавшийся для терминала,
         // затем сравниваем этот текст с эталоном
         assertEquals(
-                String.format("Category %s Created", categoryModel.getName().trim()),
+                String.format("Category %s Created", returnCategoryModel("test category 1").getName().trim()),
                 SystemOutResource.outContent.toString().trim()
         );
     }
@@ -148,13 +135,8 @@ public class CategoryServiceTest {
 
     @Test
     void shouldUpdatedCategorySuccessfully() {
-        final CategoryModel categoryModel =
-                CategoryModel.builder()
-                        .id(1L)
-                        .name("test category 1 - v2")
-                        .build();
         ResponseModel responseModel =
-                categoryService.update(categoryModel);
+                categoryService.update(returnCategoryModel("test category 1 - v2"));
         // Проверка, что результат не равен null
         assertNotNull(responseModel);
         // Проверка, что результат содержит положительный статус-код
@@ -170,14 +152,8 @@ public class CategoryServiceTest {
     @Test
     void shouldDeletedCategorySuccessfully() {
         Optional<Category> optionalCategory =
-                Optional.of(
-                        Category.builder()
-                                .id(1L)
-                                .name("c1")
-                                .build()
-                );
-        doReturn(
-                optionalCategory
+                Optional.of(Category.builder().id(1L).name("c1").build());
+        doReturn(optionalCategory
         ).when(categoryDAO) // откуда? - из объекта categoryDAO
                 .findById(1L); // когда? - когда в метод findById передан аргумент 1
         final Category category = optionalCategory.get();
@@ -192,6 +168,10 @@ public class CategoryServiceTest {
         // минимум 1 раз был вызван метод save
         verify(categoryDAO, atLeast(1))
                 .delete(categoryArgument.capture());
+    }
+
+    CategoryModel returnCategoryModel (String categoryName) {
+        return CategoryModel.builder().name(categoryName).build();
     }
 
 }
