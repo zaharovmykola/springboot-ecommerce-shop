@@ -106,11 +106,18 @@ public class AuthService {
     }
 
     public ResponseModel deleteUser(Long id) {
-        userDao.deleteById(id);
-        return ResponseModel.builder()
-            .status(ResponseModel.SUCCESS_STATUS)
-            .message(String.format("User #%d Deleted", id))
-            .build();
+        if (userDao. == id) {
+            userDao.deleteById(id);
+            return ResponseModel.builder()
+                    .status(ResponseModel.SUCCESS_STATUS)
+                    .message(String.format("User #%d Deleted", id))
+                    .build();
+        } else {
+            return ResponseModel.builder()
+                    .status(ResponseModel.FAIL_STATUS)
+                    .message(String.format("You can not delete other user"))
+                    .build();
+        }
     }
 
     public ResponseModel check(Authentication authentication) {
