@@ -13,6 +13,12 @@
                 $.ajax({
                     url: "logout"
                     , type: 'GET'
+                    , statusCode: {
+                        204: function() {
+                            onSignOut()
+                            window.location = "#!home"
+                        }
+                    }
                 }).done(function (resp) {
                     if (resp && resp.status && resp.status === "success") {
                         onSignOut()

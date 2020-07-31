@@ -11,7 +11,7 @@ public class SignInPage extends AbstractPage {
     private By loginField = By.id("username");
     private By passwordField = By.id("password");
     private By signInButton = By.cssSelector("#signin-form button[type='submit']");
-    private By signOutButton = By.cssSelector("#signout-form button[type='submit']");
+    private By signOutButton = By.cssSelector("nav a[href='#!home:out']");
     private By errorParagraph = By.cssSelector(".error");
 
     public SignInPage(WebDriver driver) {
@@ -44,9 +44,6 @@ public class SignInPage extends AbstractPage {
     }
 
     public HomePage loginOut(String userName, String password) {
-        this.typeUserName(userName);
-        this.typePassword(password);
-        driver.findElement(signInButton).click();
         driver.findElement(signOutButton).click();
         return new HomePage(driver);
     }
@@ -55,5 +52,13 @@ public class SignInPage extends AbstractPage {
         List<WebElement> errorParagraphElement =
                 driver.findElements(errorParagraph);
         return !errorParagraphElement.isEmpty() ? errorParagraphElement.get(0).getText() : null;
+    }
+
+    public Boolean isLoginFieldValid() {
+        return !driver.findElement(loginField).getAttribute("class").contains("invalid");
+    }
+
+    public Boolean isPasswordFieldValid() {
+        return !driver.findElement(passwordField).getAttribute("class").contains("invalid");
     }
 }

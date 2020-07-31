@@ -28,8 +28,9 @@ public class SignInPageTest extends AbstractPageTest {
 
     @Test
     @Order(1)
-    public void performSignInWithCorrectAdminUserNameAndPassword() {
+    public void performSignInWithCorrectAdminUserNameAndPassword() throws InterruptedException {
         signInPage.loginWithValidCredentials("admin", "AdminPassword1");
+        Thread.sleep(1000);
         assertEquals("http://localhost:8090/eCommerceShop/#!home", driver.getCurrentUrl());
         String logOutButtonText = indexPage.getLogOutButtonText();
         assertNotNull(logOutButtonText);
@@ -50,12 +51,13 @@ public class SignInPageTest extends AbstractPageTest {
 
     @Test
     @Order(3)
-    public void performSignInWithCorrectUserNameAndPassword() {
+    public void performSignInWithCorrectUserNameAndPassword() throws InterruptedException {
         signInPage.loginWithValidCredentials("one", "UserPassword1");
+        Thread.sleep(1000);
         assertEquals("http://localhost:8090/eCommerceShop/#!home", driver.getCurrentUrl());
         String logOutButtonText = indexPage.getLogOutButtonText();
         assertNotNull(logOutButtonText);
-        assertEquals("Sign Out (user)", logOutButtonText);
+        assertEquals("Sign Out (one)", logOutButtonText);
     }
 
     @Test
@@ -77,9 +79,8 @@ public class SignInPageTest extends AbstractPageTest {
         signInPage.loginWithInvalidCredentials("", "UserPassword1");
         String logOutButtonText = indexPage.getLogOutButtonText();
         assertEquals("", logOutButtonText);
-        String errorText = signInPage.getErrorText();
-        assertNotNull(errorText);
-        assertEquals("Error: wrong username or password", errorText);
+        assertTrue(!signInPage.isLoginFieldValid());
+        assertTrue(signInPage.isPasswordFieldValid());
     }
 
     @Test
@@ -89,9 +90,8 @@ public class SignInPageTest extends AbstractPageTest {
         signInPage.loginWithInvalidCredentials("one", "");
         String logOutButtonText = indexPage.getLogOutButtonText();
         assertEquals("", logOutButtonText);
-        String errorText = signInPage.getErrorText();
-        assertNotNull(errorText);
-        assertEquals("Error: wrong username or password", errorText);
+        assertTrue(signInPage.isLoginFieldValid());
+        assertTrue(!signInPage.isPasswordFieldValid());
     }
 
     @Test
@@ -101,9 +101,8 @@ public class SignInPageTest extends AbstractPageTest {
         signInPage.loginWithInvalidCredentials("", "");
         String logOutButtonText = indexPage.getLogOutButtonText();
         assertEquals("", logOutButtonText);
-        String errorText = signInPage.getErrorText();
-        assertNotNull(errorText);
-        assertEquals("Error: wrong username or password", errorText);
+        assertTrue(!signInPage.isLoginFieldValid());
+        assertTrue(!signInPage.isPasswordFieldValid());
     }
 
 }

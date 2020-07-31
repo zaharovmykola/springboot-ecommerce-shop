@@ -28,34 +28,36 @@ public class SignOutPageTest extends AbstractPageTest {
 
     @Test
     @Order(1)
-    public void performSignOutAsAdmin() {
+    public void performSignOutAsAdmin() throws InterruptedException {
         signInPage.loginWithValidCredentials("admin", "AdminPassword1");
+        Thread.sleep(2000);
         assertEquals("http://localhost:8090/eCommerceShop/#!home", driver.getCurrentUrl());
         String logOutButtonText = indexPage.getLogOutButtonText();
         assertNotNull(logOutButtonText);
         assertEquals("Sign Out (admin)", logOutButtonText);
 
         signInPage.loginOut("admin", "AdminPassword1");
+        Thread.sleep(2000);
         assertEquals("http://localhost:8090/eCommerceShop/#!home", driver.getCurrentUrl());
         String logOutButtonTextAfterSignOut = indexPage.getLogOutButtonText();
-        assertNull(logOutButtonTextAfterSignOut);
-        assertEquals("", logOutButtonText);
+        assertEquals("", logOutButtonTextAfterSignOut);
     }
 
     @Test
     @Order(2)
-    public void performSignOutAsUser() {
+    public void performSignOutAsUser() throws InterruptedException {
         signInPage.loginWithValidCredentials("one", "UserPassword1");
+        Thread.sleep(2000);
         assertEquals("http://localhost:8090/eCommerceShop/#!home", driver.getCurrentUrl());
         String logOutButtonText = indexPage.getLogOutButtonText();
         assertNotNull(logOutButtonText);
-        assertEquals("Sign Out (admin)", logOutButtonText);
+        assertEquals("Sign Out (one)", logOutButtonText);
 
         signInPage.loginOut("one", "UserPassword1");
+        Thread.sleep(2000);
         assertEquals("http://localhost:8090/eCommerceShop/#!home", driver.getCurrentUrl());
         String logOutButtonTextAfterSignOut = indexPage.getLogOutButtonText();
-        assertNull(logOutButtonTextAfterSignOut);
-        assertEquals("", logOutButtonText);
+        assertEquals("", logOutButtonTextAfterSignOut);
     }
 
 }
