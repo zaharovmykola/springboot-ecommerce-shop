@@ -105,20 +105,41 @@ public class AuthService {
                 .build();
     }
 
-    public ResponseModel deleteUser(Long id) {
-        if (userDao. == id) {
-            userDao.deleteById(id);
-            return ResponseModel.builder()
+//    public ResponseModel deleteUser(Long id) {
+//        if (userDao. == id) {
+//            userDao.deleteById(id);
+//            return ResponseModel.builder()
+//                    .status(ResponseModel.SUCCESS_STATUS)
+//                    .message(String.format("User #%d Deleted", id))
+//                    .build();
+//        } else {
+//            return ResponseModel.builder()
+//                    .status(ResponseModel.FAIL_STATUS)
+//                    .message(String.format("You can not delete other user"))
+//                    .build();
+//        }
+//    }
+
+    public ResponseModel deleteUser(Long id, Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            User user = userDao.findUserByName(authentication.getName());
+            if (user.getId().equals(id)) {
+                userDao.deleteById(id);
+                return ResponseModel.builder()
                     .status(ResponseModel.SUCCESS_STATUS)
-                    .message(String.format("User #%d Deleted", id))
                     .build();
+            } else {
+                return ResponseModel.builder()
+                    .status(ResponseModel.FAIL_STATUS)
+                    .build();
+            }
         } else {
             return ResponseModel.builder()
                     .status(ResponseModel.FAIL_STATUS)
-                    .message(String.format("You can not delete other user"))
                     .build();
         }
     }
+
 
     public ResponseModel check(Authentication authentication) {
         ResponseModel response = new ResponseModel();

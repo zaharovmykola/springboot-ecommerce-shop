@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -73,9 +74,9 @@ public class SecurityControllerMethodsTest {
 
     // дополнительные тесты
     @Test
-    @WithMockUser(username = "wrong", roles = { "USER" })
+    @WithMockUser(username = "user")
     public void failGettingAllRolesByUser() {
-        assertThrows(AuthenticationCredentialsNotFoundException.class, () -> {
+        assertThrows(AccessDeniedException.class, () -> {
             ResponseEntity responseEntity = authController.getAllRoles();
             assertNotNull(responseEntity);
             assertEquals(responseEntity.getStatusCode(), HttpStatus.FORBIDDEN);
@@ -83,9 +84,9 @@ public class SecurityControllerMethodsTest {
     }
 
     @Test
-    @WithMockUser(username = "wrong", roles = { "ADMIN" })
+    @WithMockUser(username = "admin", roles = { "ADMIN2" })
     public void failGettingAllRolesByAdmin() {
-        assertThrows(AuthenticationCredentialsNotFoundException.class, () -> {
+        assertThrows(AccessDeniedException.class, () -> {
             ResponseEntity responseEntity = authController.getAllRoles();
             assertNotNull(responseEntity);
             assertEquals(responseEntity.getStatusCode(), HttpStatus.FORBIDDEN);

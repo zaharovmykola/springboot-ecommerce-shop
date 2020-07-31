@@ -27,11 +27,12 @@ public class AuthController {
     }
 
     @Secured("ROLE_ADMIN")
-    @PostMapping("/admin/role")
+    @PostMapping("admin/role")
     public ResponseEntity<ResponseModel> createRole(@RequestBody Role role) {
         return new ResponseEntity<>(authService.createRole(role), HttpStatus.CREATED);
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping(value = "admin/role/{id}")
     public ResponseEntity<ResponseModel> deleteRole(@PathVariable Long id) {
         return new ResponseEntity<>(authService.deleteRole(id), HttpStatus.NO_CONTENT);
@@ -65,8 +66,14 @@ public class AuthController {
     }
 
     @DeleteMapping(value = "/user/{id}")
-    public ResponseEntity<ResponseModel> deleteUser(@PathVariable Long id) {
-        return new ResponseEntity<>(authService.deleteUser(id), HttpStatus.NO_CONTENT);
+    public ResponseEntity<ResponseModel> deleteUser(@PathVariable Long id, Authentication authentication) {
+        ResponseModel responseModel = authService.deleteUser(id, authentication);
+        return new ResponseEntity<>(
+                responseModel,
+                (responseModel.getStatus().equals(ResponseModel.FAIL_STATUS))
+                ? HttpStatus.FORBIDDEN
+                : HttpStatus.NO_CONTENT
+        );
     }
 
     @GetMapping(value = "/user/check")

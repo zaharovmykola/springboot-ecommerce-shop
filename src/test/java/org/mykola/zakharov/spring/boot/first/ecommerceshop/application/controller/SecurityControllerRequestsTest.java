@@ -147,7 +147,18 @@ public class SecurityControllerRequestsTest {
     }
 
     @Test
-    @Order(8)
+    @Order(8) // Этот кейс выполнить вторым
+    public void performLoginWithUserPassword() throws Exception {
+        // отправить стандартный пост-запрос для входа
+        // (имя конечной точки по умолчанию)
+        mvc.perform(formLogin("/login")
+                .user("one") // в теле запроса отправить имя
+                .password("UserPassword1")) // в теле запроса отправить пароль
+                .andExpect((status().isOk())); // и ожидать статус-код 200 (OK)
+    }
+
+    @Test
+    @Order(9)
     public void whenAnonymousUserRequestsDeleteUser_ThenUnauthorized() {
         // получить ответ "не авторизован" на попытку
         // удалить пользователя с ИД 2 http-запросом DELETE,
@@ -162,8 +173,38 @@ public class SecurityControllerRequestsTest {
     }
 
     @Test
-    @Order(9)
-    public void whenLoggedUserRequestsDeleteUser_ThenSuccess() {
+    @Order(10)
+    public void whenLoggedUserRequestsDeleteAnotherUser_ThenForbidden() {
+        // получить отрицательный ответ "нет содержимого" на попытку
+        // удалить пользователя с ИД 3 http-запросом DELETE,
+        // войдя предварительно как простой зарегистрированный пользователь (loginUser())
+        ResponseEntity<String> httpStatus =
+                testRestTemplate.exchange(
+                        baseUrl + "api/auth/user/3",
+                        HttpMethod.DELETE,
+                        new HttpEntity<>(loginUser()),
+                        String.class);
+        assertEquals(HttpStatus.FORBIDDEN, httpStatus.getStatusCode());
+    }
+
+    @Test
+    @Order(11)
+    public void whenLoggedAdminRequestsDeleteHimself_ThenSuccess() {
+        // получить положительный ответ "нет содержимого" на попытку
+        // удалить пользователя с ИД 1 http-запросом DELETE,
+        // войдя предварительно как простой зарегистрированный пользователь (loginUser())
+        ResponseEntity<String> httpStatus =
+                testRestTemplate.exchange(
+                        baseUrl + "api/auth/user/1",
+                        HttpMethod.DELETE,
+                        new HttpEntity<>(loginAdmin()),
+                        String.class);
+        assertEquals(HttpStatus.NO_CONTENT, httpStatus.getStatusCode());
+    }
+
+    @Test
+    @Order(12)
+    public void whenLoggedUserRequestsDeleteHimself_ThenSuccess() {
         // получить положительный ответ "нет содержимого" на попытку
         // удалить пользователя с ИД 2 http-запросом DELETE,
         // войдя предварительно как простой зарегистрированный пользователь (loginUser())
@@ -174,32 +215,6 @@ public class SecurityControllerRequestsTest {
                         new HttpEntity<>(loginUser()),
                         String.class);
         assertEquals(HttpStatus.NO_CONTENT, httpStatus.getStatusCode());
-    }
-
-    @Test
-    @Order(10)
-    public void whenLoggedAdminRequestsDeleteUser_ThenSuccess() {
-        // получить положительный ответ "нет содержимого" на попытку
-        // удалить пользователя с ИД 2 http-запросом DELETE,
-        // войдя предварительно как простой зарегистрированный пользователь (loginUser())
-        ResponseEntity<String> httpStatus =
-                testRestTemplate.exchange(
-                        baseUrl + "api/auth/user/2",
-                        HttpMethod.DELETE,
-                        new HttpEntity<>(loginAdmin()),
-                        String.class);
-        assertEquals(HttpStatus.NO_CONTENT, httpStatus.getStatusCode());
-    }
-
-    @Test
-    @Order(11) // Этот кейс выполнить вторым
-    public void performLoginWithUserPassword() throws Exception {
-        // отправить стандартный пост-запрос для входа
-        // (имя конечной точки по умолчанию)
-        mvc.perform(formLogin("/login")
-                .user("one") // в теле запроса отправить имя
-                .password("UserPassword1")) // в теле запроса отправить пароль
-                .andExpect((status().isOk())); // и ожидать статус-код 200 (OK)
     }
 
     // метод тестового входа в ааккаунт (не тест-кейс),
