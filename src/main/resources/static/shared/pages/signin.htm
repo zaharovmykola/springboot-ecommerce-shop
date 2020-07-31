@@ -76,6 +76,8 @@
                             }).always(function (resp) {
                                 if (resp && resp.status && resp.status == 401) {
                                     alert("Error: wrong username or password");
+                                    // $page.find('.card-title').after("<p class='error'>Error: wrong username or password</p>")
+                                    // setTimeout(() => {$page.find('.error').remove()}, 5000)
                                 } else if (resp && resp.status && resp.status === "success") {
                                     // alert("Signed In");
                                 } else {
@@ -94,6 +96,8 @@
                 }).always(function (resp) {
                     if (resp && resp.status && resp.status == 401) {
                         alert("Error: wrong username or password");
+                        $page.find('.card-title').after("<p class='error'>Error: wrong username or password</p>")
+                        setTimeout(() => {$page.find('.error').remove()}, 5000)
                     } else if (resp && resp.status === "fail") {
                         alert(resp.message);
                     }

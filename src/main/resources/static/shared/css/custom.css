@@ -19,6 +19,9 @@ section {
 section.active {
     display: block;
 }
+.error {
+    color: red;
+}
 /* Admin */
 #categories-edit, #articles-edit {
     display: none;
