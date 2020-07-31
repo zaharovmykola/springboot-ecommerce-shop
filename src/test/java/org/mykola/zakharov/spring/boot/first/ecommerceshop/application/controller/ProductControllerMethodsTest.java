@@ -2,9 +2,9 @@ package org.mykola.zakharov.spring.boot.first.ecommerceshop.application.controll
 
 import org.junit.jupiter.api.Test;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.controller.ProductController;
-import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.CategoryModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ProductFilterModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ProductModel;
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,12 +14,15 @@ import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 public class ProductControllerMethodsTest {
+
+    private Long lastId = Long.MAX_VALUE;
 
     @Value("tests.unit.strings.image-base64")
     private String imageBase64;
@@ -91,13 +94,43 @@ public class ProductControllerMethodsTest {
         final ProductFilterModel filter =
                 ProductFilterModel.builder()
                         .categories(Arrays.asList(1L, 2L, 3L))
-                        .orderBy("")
+                        .orderBy("id")
                         .sortingDirection(Sort.Direction.ASC)
                         .build();
         ResponseEntity responseEntityFilter
                 = productController.getByCategories(filter.categories, filter.orderBy, filter.sortingDirection);
         assertNotNull(responseEntityFilter);
         assertEquals(responseEntityFilter.getStatusCode(), HttpStatus.OK);
+    }
+
+    @Test
+    public void shouldFilteredProductsBySomeExactlyCategories () {
+        final ProductFilterModel filter =
+                ProductFilterModel.builder()
+                        .categories(Arrays.asList(1L, 2L))
+                        .orderBy("id")
+                        .sortingDirection(Sort.Direction.DESC)
+                        .build();
+        ResponseEntity responseEntityFiltered
+                = productController.getByCategories(
+                filter.categories,
+                filter.orderBy,
+                filter.sortingDirection
+        );
+        assertNotNull(responseEntityFiltered);
+        assertEquals(responseEntityFiltered.getStatusCode(), HttpStatus.OK);
+        ((List<ProductModel>)((ResponseModel)responseEntityFiltered.getBody())
+                .getData())
+                .forEach(productModel -> {
+                    if (!(productModel.getCategoryId().equals(1L)
+                            || productModel.getCategoryId().equals(2L))) {
+                        fail("Expected Category id equals 1L or 2L, but got " + productModel.getCategoryId());
+                    }
+                    if (productModel.getId() > lastId) {
+                        fail("Expected DESC sort, but got ASC one");
+                    }
+                    lastId = productModel.getId();
+                });
     }
 
 }

@@ -70,4 +70,26 @@ public class SecurityControllerMethodsTest {
         assertNotNull(responseEntity);
         assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
     }
+
+    // дополнительные тесты
+    @Test
+    @WithMockUser(username = "wrong", roles = { "USER" })
+    public void failGettingAllRolesByUser() {
+        assertThrows(AuthenticationCredentialsNotFoundException.class, () -> {
+            ResponseEntity responseEntity = authController.getAllRoles();
+            assertNotNull(responseEntity);
+            assertEquals(responseEntity.getStatusCode(), HttpStatus.FORBIDDEN);
+        });
+    }
+
+    @Test
+    @WithMockUser(username = "wrong", roles = { "ADMIN" })
+    public void failGettingAllRolesByAdmin() {
+        assertThrows(AuthenticationCredentialsNotFoundException.class, () -> {
+            ResponseEntity responseEntity = authController.getAllRoles();
+            assertNotNull(responseEntity);
+            assertEquals(responseEntity.getStatusCode(), HttpStatus.FORBIDDEN);
+        });
+    }
+
 }
