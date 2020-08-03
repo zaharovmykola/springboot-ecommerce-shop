@@ -46,59 +46,50 @@
                     , data: $signInForms.serialize()
                     , type: 'POST'
                 }).done(function (resp, statusText, xhr) {
-                    if (xhr.status == 200) {
-                        $.get("api/auth/user/check")
-                            .done(function (resp) {
-                                let modalInstance
-                                if (resp) {
-                                    if (resp.status === 'success') {
-                                        if (resp.data !== undefined) {
-                                            signInForm.reset()
-                                            onSignIn(resp.data)
-                                            window.location = "#!home"
-                                        }
-                                    } else if (resp.status === 'fail') {
-                                        modalInstance = M.Modal.getInstance($modal)
-                                        $modal.find('.modal-content').html("Auth error")
-                                        modalInstance.open()
-                                    } else if (resp.status === 'error') {
-                                        modalInstance = M.Modal.getInstance($modal)
-                                        $modal.find('.modal-content').html("Error: " + resp.message)
-                                        $modal.find('.modal-footer > a').attr('href', '#!' + window.location.hash)
-                                        modalInstance.open()
+                    // login success
+                    $.get("api/auth/user/check")
+                        .done(function (resp) {
+                            let modalInstance
+                            if (resp) {
+                                if (resp.status === 'success') {
+                                    if (resp.data !== undefined) {
+                                        signInForm.reset()
+                                        onSignIn(resp.data)
+                                        window.location = "#!home"
                                     }
+                                } else if (resp.status === 'fail') {
+                                    modalInstance = M.Modal.getInstance($modal)
+                                    $modal.find('.modal-content').html("Auth error")
+                                    modalInstance.open()
+                                } else if (resp.status === 'error') {
+                                    modalInstance = M.Modal.getInstance($modal)
+                                    $modal.find('.modal-content').html("Error: " + resp.message)
+                                    $modal.find('.modal-footer > a').attr('href', '#!' + window.location.hash)
+                                    modalInstance.open()
                                 }
-                            }).fail(function (xhr, status, error) {
-                                /* template = Hogan.compile(
-                                    '<span>Error: ' + error + '</span>'
-                                ) */
-                                alert("Error: " + error)
-                            }).always(function (resp) {
-                                if (resp && resp.status && resp.status == 401) {
-                                    alert("Error: wrong username or password");
-                                    // $page.find('.card-title').after("<p class='error'>Error: wrong username or password</p>")
-                                    // setTimeout(() => {$page.find('.error').remove()}, 5000)
-                                } else if (resp && resp.status && resp.status === "success") {
-                                    // alert("Signed In");
-                                } else {
-                                    // alert("Unknown error");
-                                }
-                            })
-                    } else {
-                        const modalInstance = M.Modal.getInstance($modal)
-                        $modal.find('.modal-content').html("Error: " + resp.message)
+                            }
+                        }).fail(function (xhr, status, error) {
+                            // check user fail (server not respond)
+                            const modalInstance = M.Modal.getInstance($modal)
+                            $modal.find('.modal-content').html("Error: Server Not Respond")
                         modalInstance.open()
-                    }
+                        }).always(function (resp) {
+                            if (resp && resp.status && resp.status == 401) {
+                                $page.find('.card-title').after("<p class='error'>Error: user is unauthorized</p>")
+                                setTimeout(() => {$page.find('.error').remove()}, 5000)
+                            }
+                        })
                 }).fail(function (xhr, status, error) {
-                    /* template = Hogan.compile(
-                        '<span>Error: ' + error + '</span>'
-                    ) */
+                    // login fail (server not respond)
+                    const modalInstance = M.Modal.getInstance($modal)
+                    $modal.find('.modal-content').html("Error: Server Not Respond")
+                    modalInstance.open()
                 }).always(function (resp) {
+                    // login fail:
                     if (resp && resp.status && resp.status == 401) {
+                        // ...unauthorized
                         $page.find('.card-title').after("<p class='error'>Error: wrong username or password</p>")
                         setTimeout(() => {$page.find('.error').remove()}, 5000)
-                    } else if (resp && resp.status === "fail") {
-                        alert(resp.message);
                     }
                 })
             })

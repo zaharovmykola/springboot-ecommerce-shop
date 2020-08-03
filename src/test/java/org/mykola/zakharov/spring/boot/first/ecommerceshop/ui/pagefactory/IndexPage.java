@@ -15,12 +15,12 @@ public class IndexPage extends AbstractPage {
     @FindBy(css = "nav a[href*='signin']")
     private WebElement signInButton;
 
-    @FindBy(css = "nav a[href*='signout']")
+    @FindBy(css = "nav a[href*='#!home:out']")
     private WebElement signOutButton;
 
     // для пункта "Выход" подготавливаем только селектор,
     // потому что он будет отображаться только после входа
-    private By logOutButton = By.cssSelector("nav a[href*='#!home:out']");
+    // private By logOutButton = By.cssSelector("nav a[href*='#!home:out']");
 
     public IndexPage(WebDriver driver) {
         super(driver);
@@ -38,8 +38,16 @@ public class IndexPage extends AbstractPage {
     }
 
     public String getLogOutButtonText() {
-        List<WebElement> logOutButtonElement =
+        /* List<WebElement> logOutButtonElement =
+                driver.findElements(signOutButton);
+        return !logOutButtonElement.isEmpty() ? logOutButtonElement.get(0).getText() : null; */
+        return signOutButton.getText();
+    }
+
+    public Boolean isLogOutButtonDisplayed() {
+        /* List<WebElement> logOutButtonElement =
                 driver.findElements(logOutButton);
-        return !logOutButtonElement.isEmpty() ? logOutButtonElement.get(0).getText() : null;
+        return !logOutButtonElement.isEmpty() ? logOutButtonElement.get(0).getCssValue("display").equals("block") : false; */
+        return signOutButton.getCssValue("display").equals("block");
     }
 }

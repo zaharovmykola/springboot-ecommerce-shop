@@ -23,9 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 )
 public class SignOutPageTest extends AbstractPageTest {
 
-    private By signOutButton = By.cssSelector("nav a[href='#!home:out']");
-    private By logOutButton = By.cssSelector("nav a[href*='#!home:out']");
-
     private SignInPage signInPage;
 
     @BeforeEach
@@ -43,7 +40,7 @@ public class SignOutPageTest extends AbstractPageTest {
         assertNotNull(logOutButtonText);
         assertEquals("Sign Out (admin)", logOutButtonText);
 
-        signInPage.loginOut("admin", "AdminPassword1");
+        indexPage.clickSignOut();
         Thread.sleep(2000);
         assertEquals("http://localhost:8090/eCommerceShop/#!home", driver.getCurrentUrl());
         String logOutButtonTextAfterSignOut = indexPage.getLogOutButtonText();
@@ -60,7 +57,7 @@ public class SignOutPageTest extends AbstractPageTest {
         assertNotNull(logOutButtonText);
         assertEquals("Sign Out (one)", logOutButtonText);
 
-        signInPage.loginOut("one", "UserPassword1");
+        indexPage.clickSignOut();
         Thread.sleep(2000);
         assertEquals("http://localhost:8090/eCommerceShop/#!home", driver.getCurrentUrl());
         String logOutButtonTextAfterSignOut = indexPage.getLogOutButtonText();
@@ -71,17 +68,16 @@ public class SignOutPageTest extends AbstractPageTest {
     @Order(3)
     public void checkingSignOutStyleAndTextAvailability() throws InterruptedException {
         signInPage.loginWithValidCredentials("one", "UserPassword1");
-        Thread.sleep(5000);
-        indexPage.getLogOutButtonText();
-        List<WebElement> logOutButtonElementAfterLogIn =
-                driver.findElements(logOutButton);
-        assertTrue(logOutButtonElementAfterLogIn.contains("display: block;"));
+        Thread.sleep(2000);
+        String logOutButtonText = indexPage.getLogOutButtonText();
+        assertEquals("Sign Out (one)", logOutButtonText);
+        assertTrue(indexPage.isLogOutButtonDisplayed());
 
-        signInPage.loginOut("one", "UserPassword1");
-        Thread.sleep(5000);
-        List<WebElement> logOutButtonElementAfterLogOut =
-                driver.findElements(logOutButton);
-        assertTrue(logOutButtonElementAfterLogOut.contains("display: none;"));
+        indexPage.clickSignOut();
+        Thread.sleep(2000);
+        logOutButtonText = indexPage.getLogOutButtonText();
+        assertEquals("", logOutButtonText);
+        assertFalse(indexPage.isLogOutButtonDisplayed());
     }
 
 }

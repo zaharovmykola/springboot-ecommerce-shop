@@ -43,11 +43,6 @@ public class SignInPage extends AbstractPage {
         return new HomePage(driver);
     }
 
-    public HomePage loginOut(String userName, String password) {
-        driver.findElement(signOutButton).click();
-        return new HomePage(driver);
-    }
-
     public String getErrorText() {
         List<WebElement> errorParagraphElement =
                 driver.findElements(errorParagraph);
