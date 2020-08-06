@@ -3,6 +3,7 @@ package org.mykola.zakharov.spring.boot.first.ecommerceshop.controller;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.Product;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ProductFilterModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ProductModel;
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ProductSearchModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ResponseModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ public class ProductController {
         return new ResponseEntity<>(service.update(product), HttpStatus.OK);
     }
 
+    // пользовательское правило для составления адресной строки:
+    // :: разделяет пары "ключ-значение";
+    // : разделяет ключи и значения
     @GetMapping("/categories/{categoryIds}/products::orderBy:{orderBy}::sortingDirection:{sortingDirection}")
     public ResponseEntity<ResponseModel> getByCategories(
             @PathVariable List<Long> categoryIds,
@@ -54,5 +58,24 @@ public class ProductController {
         ResponseModel responseModel = service.delete(id);
         System.out.println(responseModel);
         return new ResponseEntity<>(responseModel, HttpStatus.OK);
+    }
+
+    // поиск списка товаров согласно query dsl-запроса из http-параметра search
+    // и сортировка по значению поля orderBy в направлении sortingDirection,
+    // заданным как часть начальной строки с произвольно выбранными разделителями:
+    // "::" - между парами ключ-значение,
+    // ":" - между каждым ключом и его значением
+    @GetMapping("/products/filtered::orderBy:{orderBy}::sortingDirection:{sortingDirection}")
+    public ResponseEntity<ResponseModel> search(
+            @RequestParam(value = "search") String searchString,
+            @PathVariable String orderBy,
+            @PathVariable Sort.Direction sortingDirection
+    ) {
+        return new ResponseEntity<>(
+                service.search(
+                        new ProductSearchModel(searchString, orderBy, sortingDirection)
+                ),
+                HttpStatus.OK
+        );
     }
 }

@@ -1,35 +1,282 @@
-<div id="shopping-root"></div>
+<div id="shopping-root">
+    <div class="row">
+        <div class="col s1 valign-wrapper">
+            <ul id="slide-out" class="sidenav">
+                <li>
+                    <ul class="collapsible">
+                        <li>
+                            <div class="collapsible-header">
+                                <i class="material-icons">list</i>Categories
+                            </div>
+                            <div class="collapsible-body">
+                                <form id="categories" action="#">
+                                    <!-- Разметка списка категорий создается динамически -->
+                                </form>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-header">
+                                <i class="material-icons">filter_list</i>Filter
+                            </div>
+                            <div class="collapsible-body">
+                                <form id="filters" action="#"></form>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="collapsible-header">
+                                <i class="material-icons">sort</i>Sort
+                            </div>
+                            <div class="collapsible-body">
+                                <form id="order-rules" action="#">
+                                    <p>
+                                        <label>
+                                            <input data-order-by="price" data-sorting-direction="DESC" name="sort-group" type="radio" />
+                                            <span>expensive first</span>
+                                        </label>
+                                    </p>
+                                    <p>
+                                        <label>
+                                            <input data-order-by="price" data-sorting-direction="ASC" name="sort-group" type="radio" />
+                                            <span>cheap first</span>
+                                        </label>
+                                    </p>
+                                    <p>
+                                        <label>
+                                            <input data-order-by="id" data-sorting-direction="DESC" name="sort-group" type="radio" />
+                                            <span>old first</span>
+                                        </label>
+                                    </p>
+                                    <p>
+                                        <label>
+                                            <input data-order-by="id" data-sorting-direction="ASC" name="sort-group" type="radio" />
+                                            <span>new first</span>
+                                        </label>
+                                    </p>
+                                </form>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <a href="#" data-target="slide-out" class="sidenav-trigger">
+                <i class="material-icons" style="pointer-events: none">settings</i>
+            </a>
+        </div>
+        <div class="col s11">
+            <!-- Сюда при помощи jquery помещается шаблон grid, заполненный данными offers -->
+            <div id="article-grid-container" class="row"></div>
+        </div>
+    </div>
+</div>
 <script>
+    // локальные элементы
+    $('.sidenav').sidenav()
+    $('.collapsible').collapsible()
     app.handler(function (param) {
         const $page = $(this)
         const $root = $page.find('#shopping-root')
         return function (param) {
-            $.ajax({
-                url: "api/categories"
-                , type: 'GET'
-            }).done(function (resp) {
-                let template
-                if (resp && resp.status === 'success') {
-                    //Готовим шаблон с местами для подстановки данных
-                    template = Hogan.compile(
-                        `<ul>
-                            {{#data}}
-                            <li>
-                                <a id="{{id}}" href="#!"/>{{name}}</a>
-                            </li>
-                            {{/data}}
-                        </ul>`
-                    )
+            const populateProductsGrid = function (filterData) {
+                //Добавляем на место таблицы анимацию бесконечного прогресса -
+                //пока будет ожидаться ответ сервера
+                preloaderShow();
+                //Если модель фильтрации не передана как аргумент функции,
+                //создаем ее
+                let filteredProductsUrl
+                if (!filterData) {
+                    filteredProductsUrl = 'http://localhost:8090/simplespa/api/products'
                 } else {
-                    template = Hogan.compile(
-                        '<span>Error. Status: {{status}}</span>'
-                    )
+                    filteredProductsUrl =
+                        `api/products/filtered
+                        ::orderBy:${filterData.orderBy}
+                        ::sortingDirection:${filterData.sortingDirection}
+                        /?search=
+                            ${filterData.categories ? 'category:' + JSON.stringify(filterData.categories) + ';' : ''}`
                 }
-                //Заполняем шаблон данными и помещаем на веб-страницу
-                $root.html(template.render(resp))
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                $('#shopping-root').html('<span>Error. Status: ' + jqXHR + '</span>');
-            });
+                // Запрашиваем у контроллера отфильтрованные и отсортированные
+                // товары, передавая ему модель фильтрации
+                /* TODO копировать параметры фильтрации и сортировки в параметр
+                * адресной строки SPA-навигации,
+                * а при загрузке раздела с таким параметром в адресной строке -
+                * формировать из него параметры для REST API запроса
+                */
+                $.ajax({
+                    url: filteredProductsUrl.replace(/\s/g,'')
+                    , type: "GET"
+                    , dataType: "json"
+                }).done(function (resp) {
+                    let template
+                    if (resp && resp.status === 'success') {
+                        let template = Hogan.compile(
+                            `<div class="col s12 m12 l6 xl4">
+                                <div class="card hoverable">
+                                    <div class="card-image">
+                                        <img src="{{image}}">
+                                        <a data-product-id="{{id}}" class="btn-floating btn-large halfway-fab waves-effect waves-light red tooltipped" data-position="top" data-tooltip="Add one item to cart"><i class="large material-icons">add</i></a>
+                                    </div>
+                                    <div class="card-content">
+                                        <span class="card-title">
+                                            <div>{{title}} ({{category.name}})</div>
+                                            <div>{{price}}</div>
+                                        </span>
+                                        <p>{{description}}</p>
+                                    </div>
+                                </div>
+                            </div>`
+                        )
+                        //Заполняем шаблон данными и помещаем на веб-страницу
+                        resp = JSON.parse(decodeURIComponent(JSON.stringify(resp)))
+                        let colLimit = 3
+                        if ($(document).width() <= 1200) {
+                            colLimit = 2
+                        }
+                        $root.find('#article-grid-container').html('')
+                        $.each(resp.data, function (index, value) {
+                            // если в контейнере для вывода сетки товаров
+                            // еще нет ни одного ряда
+                            // ИЛИ
+                            // если в последнем ряду в контейнере
+                            // количество карточек больше предельно допустимого
+                            if ($root.find('#article-grid-container > .row:last-child').length === 0
+                                || $root.find('#article-grid-container > .row:last-child > .col').length > colLimit - 1) {
+                                // вставляем в конец списка рядов в контейнере
+                                // новый пустой ряд
+                                $root.find('#article-grid-container').append("<div class='row'></div>")
+                            }
+                            // в любом случае в конец списка карточек в последнем ряду контейнера
+                            // добавляем очередную карточку
+                            $root.find('#article-grid-container > .row:last-child')
+                                .append(template.render(value))
+                        })
+                        //Активация всплывающих подсказок
+                        $root.find('.tooltipped').tooltip()
+                        //Обработчик клика по плавающей кнопке действия
+                        //"Добавить в корзину"
+                        $(".btn-floating").unbind("click")
+                        $('.btn-floating').click(function (ev) {
+                            ev.preventDefault()
+                            if (signed) {
+                                // Считываем у кнопки, по которой кликнули, ИД товара
+                                const productId = $(this).data('productId');
+                                // Отправляем асинхронный запрос о добавлении
+                                // товара в корзину
+                                $.ajax({
+                                    url: "api/cart/" + productId
+                                    , type: 'POST'
+                                }).done(function (resp) {
+                                    if (resp && resp.status === 'success') {
+                                        alert("One item added to Your cart")
+                                    } else {
+                                        alert("error: " + resp.error)
+                                    }
+                                }).fail(function (jqXHR, textStatus, message) {
+
+                                    alert("Ошибка: " + message)
+                                })
+                            } else {
+                                window.location = "#!signin"
+                            }
+                        })
+                    } else {
+                        template = Hogan.compile(
+                            '<span>Error: {{message}}</span>'
+                        )
+                        //Заполняем шаблон сообщением об ошибке
+                        //и помещаем на веб-страницу
+                        //$('#products-container').html(template.render(resp));
+                    }
+                }).fail(function (jqXHR, textStatus, message) {
+                    alert("Error: " + message)
+                }).always(function () {
+                    preloaderHide()
+                })
+            }
+            //Вызов функции заполнения сетки товаров без передачи параметра,
+            //чтобы отобразить все товары с сортировкой по умолчанию
+            populateProductsGrid()
+            //Функция заполнения фильтра по категориям
+            const populateCategoriesFilter = function () {
+                //Добавляем анимацию бесконечного прогресса -
+                //пока будет ожидаться ответ сервера
+                preloaderShow()
+                //Запрашиваем с сервера список всех категорий
+                $.ajax({
+                    url: 'api/categories',
+                    type: "GET",
+                    cache: false
+                }).done(function (resp) {
+                    if (resp) {
+                        if (resp.status === 'error') {
+                            alert("Error: " + resp.message)
+                        } else {
+                            const template = Hogan.compile(
+                                `{{#data}}
+                                    <p>
+                                        <label for="c{{id}}">
+                                            <input id="c{{id}}" data-category-id="{{id}}" type="checkbox" /><span>{{name}}</span>
+                                        </label>
+                                    </p>
+                                {{/data}}`
+                            )
+                            //Заполняем шаблон данными и помещаем на веб-страницу
+                            $root.find('#categories').html(template.render(resp))
+                        }
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    alert("Error: " + jqXHR)
+                }).always(function () {
+                    preloaderHide()
+                })
+            }
+            // вызов функции заполнения списка фильтра по категориям
+            populateCategoriesFilter()
+            // функция сбора данных о фильтрации и сортировке
+            // и передачи их в функцию заполнения сетки карточками товаров
+            const doFilter = function () {
+                const filterData = {}
+                const categoryArray = []
+                //Перебираем все чекбоксы категорий и добавляем их в массив
+                $root.find("#categories input:checked").each(function () {
+                    // обрачивание ссылки на текущий выбранный чекбокс в jQuery-объект,
+                    // извлечение копии значения дата-атрибута data-category-id
+                    // и добавление его в конец массива идентификаторов категорий
+                    categoryArray.push($(this).data('categoryId'))
+                })
+                // Если массив выбранных категорий не пуст -
+                // добавляем параметр категорий в объект запроса
+                if (categoryArray.length > 0) {
+                    filterData["categories"] = categoryArray
+                }
+                // добавляем параметры сортировки в объект запроса
+                const checkedSortingRadioButton =
+                    $root.find('form#order-rules input[type=radio]:checked')
+                if (checkedSortingRadioButton.length > 0) {
+                    filterData['orderBy'] =
+                        checkedSortingRadioButton.data('orderBy')
+                    filterData['sortingDirection'] =
+                        checkedSortingRadioButton.data('sortingDirection')
+                } else {
+                    filterData['orderBy'] = 'id'
+                    filterData['sortingDirection'] = 'DESC'
+                }
+                // вызов функции заполнения сетки карточками товаров
+                // с передачей ей данных фильтрации и сортировки
+                populateProductsGrid(filterData)
+            }
+            $(document).unbind('change')
+            $(document).on(
+                'change'
+                , '#shopping-root #categories input[type=checkbox]'
+                , function () {
+                    doFilter()
+                })
+            $(document).on(
+                'change'
+                , 'form#order-rules input[type=radio]:checked'
+                , function () {
+                    doFilter()
+                })
+            setTimeout(preloaderHide, 500)
         }
     })
 </script>
