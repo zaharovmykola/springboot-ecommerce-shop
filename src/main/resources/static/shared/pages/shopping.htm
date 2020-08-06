@@ -43,13 +43,13 @@
                                     <p>
                                         <label>
                                             <input data-order-by="id" data-sorting-direction="DESC" name="sort-group" type="radio" />
-                                            <span>old first</span>
+                                            <span>new first</span>
                                         </label>
                                     </p>
                                     <p>
                                         <label>
                                             <input data-order-by="id" data-sorting-direction="ASC" name="sort-group" type="radio" />
-                                            <span>new first</span>
+                                            <span>old first</span>
                                         </label>
                                     </p>
                                 </form>
@@ -84,7 +84,7 @@
                 //создаем ее
                 let filteredProductsUrl
                 if (!filterData) {
-                    filteredProductsUrl = 'http://localhost:8090/simplespa/api/products'
+                    filteredProductsUrl = 'api/products'
                 } else {
                     filteredProductsUrl =
                         `api/products/filtered

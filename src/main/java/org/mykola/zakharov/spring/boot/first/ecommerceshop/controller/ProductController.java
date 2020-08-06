@@ -15,22 +15,22 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/api")
 public class ProductController {
     @Autowired
     private ProductService service;
 
-    @GetMapping("")
+    @GetMapping("/products")
     public ResponseEntity<ResponseModel> getAll() {
         return new ResponseEntity<>(service.getAll(), HttpStatus.OK);
     }
 
-    @PostMapping("")
+    @PostMapping("/products")
     public ResponseEntity<ResponseModel> create(@RequestBody ProductModel product) {
         return new ResponseEntity<>(service.create(product), HttpStatus.CREATED);
     }
 
-    @PatchMapping(value = "/{id}")
+    @PatchMapping(value = "/products/{id}")
     public ResponseEntity<ResponseModel> update(@PathVariable Long id, @RequestBody ProductModel product) {
         product.setId(id);
         return new ResponseEntity<>(service.update(product), HttpStatus.OK);
@@ -53,7 +53,7 @@ public class ProductController {
         );
     }
 
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = "/products/{id}")
     public ResponseEntity<ResponseModel> deleteProduct(@PathVariable Long id) {
         ResponseModel responseModel = service.delete(id);
         System.out.println(responseModel);

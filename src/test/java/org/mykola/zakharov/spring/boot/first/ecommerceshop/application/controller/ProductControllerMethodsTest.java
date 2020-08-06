@@ -1,5 +1,6 @@
 package org.mykola.zakharov.spring.boot.first.ecommerceshop.application.controller;
 
+import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.controller.ProductController;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ProductFilterModel;

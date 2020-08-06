@@ -31,7 +31,4 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<Order> setOfOrders = new HashSet<>(0);
-
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
-    private ShoppingCart shoppingCart;
 }

@@ -21,7 +21,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false, unique = true, length = 100)
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
     @Column(name="description", nullable = false, length=2000)
     private String description;
@@ -39,8 +39,5 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private Set<Order> setOfOrders = new HashSet<>(0);
 
-    @ManyToMany(fetch = FetchType.LAZY) // выкачиватся данные будут только когда попросят
-    @JoinColumn(name = "shoppingCart_id")
-    private Set<ShoppingCart> setOfShoppingCarts = new HashSet<>(0);
 }
 

@@ -138,11 +138,12 @@ public class ProductService {
             products.stream()
             .map((p)->
                 ProductModel.builder()
+                    .id(p.getId())
                     .title(p.getName())
                     .description(p.getDescription())
                     .price(p.getPrice())
                     .quantity(p.getQuantity())
-                    .categoryId(p.getCategory().getId())
+                    .category(CategoryModel.builder().id(p.getCategory().getId()).name(p.getCategory().getName()).build())
                     .build()
             )
             .collect(Collectors.toList());

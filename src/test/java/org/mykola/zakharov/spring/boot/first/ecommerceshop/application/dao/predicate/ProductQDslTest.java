@@ -1,6 +1,6 @@
 package org.mykola.zakharov.spring.boot.first.ecommerceshop.application.dao.predicate;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.EcommerceShopApplication;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.dao.ProductHibernateDAO;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.dao.predicate.ProductPredicatesBuilder;
@@ -10,11 +10,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.NONE,
         classes = EcommerceShopApplication.class
 )
-public class ProductQueryDslTest {
+public class ProductQDslTest {
 
     @Autowired
     private ProductHibernateDAO productDAO;
