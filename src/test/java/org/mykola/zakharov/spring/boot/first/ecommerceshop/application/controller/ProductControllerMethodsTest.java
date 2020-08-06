@@ -121,8 +121,8 @@ public class ProductControllerMethodsTest {
         ((List<ProductModel>)((ResponseModel)responseEntityFiltered.getBody())
                 .getData())
                 .forEach(productModel -> {
-                    if (!(productModel.getCategoryId().equals(1L)
-                            || productModel.getCategoryId().equals(2L))) {
+                    if (!(productModel.getCategory().getId().equals(1L)
+                            || productModel.getCategory().getId().equals(2L))) {
                         fail("Expected Category id equals 1L or 2L, but got " + productModel.getCategoryId());
                     }
                     if (productModel.getId() > lastId) {

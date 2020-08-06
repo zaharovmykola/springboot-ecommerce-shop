@@ -1,6 +1,7 @@
 package org.mykola.zakharov.spring.boot.first.ecommerceshop.controller;
 
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.Role;
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.Cart;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ResponseModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.UserRequestModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.service.AuthService;
@@ -10,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
 
 
 @RestController
@@ -94,7 +97,11 @@ public class AuthController {
     }
 
     @GetMapping("/user/onerror")
-    public ResponseEntity<ResponseModel> onError() {
+    public ResponseEntity<ResponseModel> signedOut(HttpSession httpSession) {
+        Cart cart = (Cart) httpSession.getAttribute("CART");
+        if (cart != null) {
+            httpSession.removeAttribute("CART");
+        }
         return new ResponseEntity<>(authService.onError(), HttpStatus.UNAUTHORIZED);
     }
 

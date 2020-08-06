@@ -37,3 +37,6 @@ section.active {
 .card:nth-child(3n) .card-content:after {
     content: "<div class='divider'></div>" !important;
 }
+.cart{
+    display: none;
+}

@@ -40,4 +40,111 @@ $(document).ready(function () {
                 alert("Fatal error: " + error)
             }
         })
+    const showCart = function () {
+        $.ajax({
+            url: "api/cart"
+            , type: 'GET'
+            , cache: false
+        }).done(function (resp) {
+            let template
+            if (resp && resp.status === 'success') {
+                template = Hogan.compile(
+                    `<table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>id</th>
+                                        <th>name</th>
+                                        <th>count</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#data}}
+                                        <tr>
+                                            <th scope="row">{{id}}</th>
+                                                <td>{{name}}</td>
+                                                <td>{{count}}</td>
+                                            <td>
+                                            <div class="row">
+                                                <a class="col s3 offset-s1 waves-effect waves-light btn negBtn"><i class="material-icons">exposure_neg_1</i></a>
+                                                <a class="col s3 offset-s1 waves-effect waves-light btn plusBtn"><i class="material-icons">exposure_plus_1</i></a>
+                                                <a class="col s3 offset-s1 waves-effect waves-light btn remBtn"><i class="material-icons">clear</i></a>
+                                            </div>
+                                            </td>
+                                        </tr>
+                                    {{/data}}
+                                    {{^data}}
+                                        <span>Your cart is empty</span>
+                                    {{/data}}
+                                </tbody>
+                            </table>`
+                )
+                //Заполняем шаблон данными и помещаем на веб-страницу
+                resp = JSON.parse(decodeURIComponent(JSON.stringify(resp)))
+                $('.modal-content').html(template.render(resp))
+                $(".plusBtn").unbind("click")
+                $('.plusBtn').click(function (ev) {
+                    ev.preventDefault()
+                    const productId = $(this).parent().parent().parent().children('th').text()
+                    $.ajax({
+                        url: "api/cart/" + productId
+                        , type: 'POST'
+                    }).done(function (resp) {
+                        if (resp && resp.status === 'success') {
+                            showCart()
+                        } else {
+                            alert("error: " + resp.message)
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        alert("Error: " + jqXHR)
+                    })
+                })
+                $(".negBtn").unbind("click")
+                $('.negBtn').click(function (ev) {
+                    ev.preventDefault()
+                    const productId = $(this).parent().parent().parent().children('th').text()
+                    $.ajax({
+                        url: "api/cart/" + productId
+                        , type: 'PUT'
+                    }).done(function (resp) {
+                        if (resp && resp.status === 'success') {
+                            showCart()
+                        } else {
+                            alert("error: " + resp.message)
+                        }
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        alert("Error: " + jqXHR)
+                    })
+                })
+                $(".remBtn").unbind("click")
+                $('.remBtn').click(function (ev) {
+                    if (confirm("Remove all the items?")) {
+                        ev.preventDefault()
+                        const productId =
+                            $(this).parent().parent().parent()
+                                .children('th').text()
+                        $.ajax({
+                            url: "api/cart/" + productId
+                            , type: 'DELETE'
+                        }).done(function (resp) {
+                            if (resp && resp.status === 'success') {
+                                showCart()
+                            } else {
+                                alert("error: " + resp.message)
+                            }
+                        }).fail(function (jqXHR, textStatus, errorThrown) {
+                            alert("Error: " + jqXHR)
+                        })
+                    }
+                })
+            } else {
+                template = Hogan.compile(
+                    '<span>Error: {{message}}</span>'
+                )
+            }
+        }).fail(function (jqXHR, textStatus, message) {
+            alert("Error: " + jqXHR)
+        })
+    }
+    //Привязка обработчика события - клик по кнопке "Показать корзину"
+    $('.cart').click(showCart)
 })
