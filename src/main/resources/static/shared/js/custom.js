@@ -58,13 +58,13 @@ $(document).ready(function () {
                                         <th>price</th>
                                     </tr>                                  
                                 </thead>
-                                <tbody id="tbody">
+                                <tbody>
                                     {{#data}}
                                         <tr>
                                             <th scope="row">{{id}}</th>
                                             <td>{{name}}</td>
-                                            <td id="count">{{count}}</td>
-                                            <td id="price">{{price}}</td>
+                                            <td class="cartItemQuantity">{{count}}</td>
+                                            <td class="cartItemPrice">{{price}}</td>
                                             <td>
                                                 <div class="row">
                                                     <a class="col s3 offset-s1 waves-effect waves-light btn negBtn"><i class="material-icons">exposure_neg_1</i></a>
@@ -75,24 +75,10 @@ $(document).ready(function () {
                                         </tr>                                                          
                                     {{/data}}
                                     <tr>  
-                                    <th></th>
-                                    <th></th>                               
-                                    <th>Total price</th>
-                                    <th> {{
-                                    function () {
-                                    
-                                    let someTbody = document.getElementById('tbody'),
-                                    cells = someTbody.getElementsByTagName('tr'); 
-                                                                       
-                                    let sum
-                                    for (let i = 1; i < cells.length - 1; i++) {                     
-                                    sum = sum + ( $('.table)).find('#count').children().get() )
-                                        * ( $('.table)).find('#price').children().get() )                                                                            
-                                    }
-                                    return sum
-                                    } 
-                                    }}                                
-                                    </th>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>                             
+                                        <th></th>
                                     </tr> 
                                     {{^data}}
                                         <span>Your cart is empty</span>
@@ -103,6 +89,21 @@ $(document).ready(function () {
                 //Заполняем шаблон данными и помещаем на веб-страницу
                 resp = JSON.parse(decodeURIComponent(JSON.stringify(resp)))
                 $('.modal-content').html(template.render(resp))
+                let cartTableDataRows =
+                    document.querySelectorAll('.modal-content tbody tr:not(:last-child)')
+                console.log('cartTableDataRows = ', cartTableDataRows)
+                let totalPrice = 0
+                cartTableDataRows.forEach((row, idx, rows) => {
+                    const cartItemQuantity =
+                        $(row).find('.cartItemQuantity').text()
+                    const cartItemPrice =
+                        $(row).find('.cartItemPrice').text()
+                    console.log(cartItemQuantity, cartItemPrice)
+                    totalPrice += cartItemQuantity * cartItemPrice
+
+                })
+                console.log('totalPrice = ', totalPrice)
+                $('.modal-content tbody tr:last-child > th').text(`Total price: ${totalPrice.toFixed(2)}`)
                 $(".plusBtn").unbind("click")
                 $('.plusBtn').click(function (ev) {
                     ev.preventDefault()
