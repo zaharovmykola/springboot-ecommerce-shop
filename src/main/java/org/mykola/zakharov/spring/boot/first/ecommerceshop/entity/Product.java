@@ -25,7 +25,7 @@ public class Product {
     private String name;
     @Column(name="description", nullable = false, length=2000)
     private String description;
-    @Column(name="price", columnDefinition="DECIMAL(10,0)")  // ??? decimal(10,0)
+    @Column(name="price", columnDefinition="DECIMAL(10,2)")  // ??? decimal(10,0)
     private BigDecimal price;
     @Column(name="quantity")
     private Integer quantity;
