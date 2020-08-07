@@ -3,6 +3,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 /* Товар в корзине */
 @AllArgsConstructor
 @Getter
@@ -16,4 +18,5 @@ public class CartItem {
     private Long id;
     private String name;
     private Integer count;
+    private BigDecimal price;
 }

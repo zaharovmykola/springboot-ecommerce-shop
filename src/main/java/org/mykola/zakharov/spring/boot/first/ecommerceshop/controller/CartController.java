@@ -17,6 +17,7 @@ public class CartController {
     @Autowired
     private CartService productService;
 
+    // внедрение объекта сеанса http через аргумент метода
     @GetMapping("")
     public ResponseEntity<ResponseModel> getCartItems(HttpSession httpSession) {
         Cart cart = (Cart) httpSession.getAttribute("CART");
@@ -28,16 +29,21 @@ public class CartController {
 
     @PostMapping("/{id}")
     public ResponseEntity<ResponseModel> addCartItemCount(@PathVariable("id") Long id, HttpSession httpSession) {
+        // попытка извлечь из объекта сеанса объект корзины
         Cart cart = (Cart) httpSession.getAttribute("CART");
         if (cart == null) {
+            // если не удалось - создаем новый объект корзины
             cart = new Cart();
         }
+        // вызов метода службы - увеличить число товара в корзине на 1
         ResponseModel response =
                 productService.changeCartItemCount(
                         cart
                         , id
                         , CartItem.Action.ADD
                 );
+        // сохранение объекта корзины в сеанс -
+        // первичное или обновление
         httpSession.setAttribute("CART", cart);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

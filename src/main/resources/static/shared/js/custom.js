@@ -55,23 +55,45 @@ $(document).ready(function () {
                                         <th>id</th>
                                         <th>name</th>
                                         <th>count</th>
-                                    </tr>
+                                        <th>price</th>
+                                    </tr>                                  
                                 </thead>
-                                <tbody>
+                                <tbody id="tbody">
                                     {{#data}}
                                         <tr>
                                             <th scope="row">{{id}}</th>
-                                                <td>{{name}}</td>
-                                                <td>{{count}}</td>
+                                            <td>{{name}}</td>
+                                            <td id="count">{{count}}</td>
+                                            <td id="price">{{price}}</td>
                                             <td>
-                                            <div class="row">
-                                                <a class="col s3 offset-s1 waves-effect waves-light btn negBtn"><i class="material-icons">exposure_neg_1</i></a>
-                                                <a class="col s3 offset-s1 waves-effect waves-light btn plusBtn"><i class="material-icons">exposure_plus_1</i></a>
-                                                <a class="col s3 offset-s1 waves-effect waves-light btn remBtn"><i class="material-icons">clear</i></a>
-                                            </div>
+                                                <div class="row">
+                                                    <a class="col s3 offset-s1 waves-effect waves-light btn negBtn"><i class="material-icons">exposure_neg_1</i></a>
+                                                    <a class="col s3 offset-s1 waves-effect waves-light btn plusBtn"><i class="material-icons">exposure_plus_1</i></a>
+                                                    <a class="col s3 offset-s1 waves-effect waves-light btn remBtn"><i class="material-icons">clear</i></a>
+                                                </div>
                                             </td>
-                                        </tr>
+                                        </tr>                                                          
                                     {{/data}}
+                                    <tr>  
+                                    <th></th>
+                                    <th></th>                               
+                                    <th>Total price</th>
+                                    <th> {{
+                                    function () {
+                                    
+                                    let someTbody = document.getElementById('tbody'),
+                                    cells = someTbody.getElementsByTagName('tr'); 
+                                                                       
+                                    let sum
+                                    for (let i = 1; i < cells.length - 1; i++) {                     
+                                    sum = sum + ( $('.table)).find('#count').children().get() )
+                                        * ( $('.table)).find('#price').children().get() )                                                                            
+                                    }
+                                    return sum
+                                    } 
+                                    }}                                
+                                    </th>
+                                    </tr> 
                                     {{^data}}
                                         <span>Your cart is empty</span>
                                     {{/data}}

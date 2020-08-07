@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 
 
 import javax.transaction.Transactional;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -162,7 +164,7 @@ public class ProductService {
             ProductPredicatesBuilder builder = new ProductPredicatesBuilder();
             // разбиение значения http-параметра search
             // на отдельные выражения условий фильтрации
-            Pattern pattern = Pattern.compile("([\\w]+?)(:|<|>)([\\w\\]\\[\\,]+?);");
+            Pattern pattern = Pattern.compile("([\\w]+?)(:|<|>|<:|>:)([\\w\\]\\[\\,]+?);");
             Matcher matcher = pattern.matcher(searchModel.searchString + ";");
             while (matcher.find()) {
                 builder.with(matcher.group(1), matcher.group(2), matcher.group(3));
@@ -216,4 +218,21 @@ public class ProductService {
                 .data(productModels)
                 .build();
     }
+
+    public ResponseModel getProductsPriceBounds() {
+        Map<String, Integer> maxndMin = new LinkedHashMap<>();
+        maxndMin.put("min", productDao.findAll().stream()
+                .min((p1, p2) -> p1.getPrice().subtract(p2.getPrice())
+                        .toBigInteger().intValue())
+                .map(product -> (int)Math.round(product.getPrice().doubleValue())).get());
+        maxndMin.put("max", productDao.findAll().stream()
+                .max((p1, p2) -> p1.getPrice().subtract(p2.getPrice())
+                        .toBigInteger().intValue())
+                .map(product -> (int)Math.round(product.getPrice().doubleValue())).get());
+        return ResponseModel.builder()
+                .status(ResponseModel.SUCCESS_STATUS)
+                .data(maxndMin)
+                .build();
+    }
+
 }

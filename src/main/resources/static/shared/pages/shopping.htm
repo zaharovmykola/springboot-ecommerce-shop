@@ -19,7 +19,21 @@
                                 <i class="material-icons">filter_list</i>Filter
                             </div>
                             <div class="collapsible-body">
-                                <form id="filters" action="#"></form>
+                                <form id="filters" action="#">
+                                    <span>Price Range</span>
+                                    <div class="row valign-wrapper">
+                                        <span class="col s3">from</span>
+                                        <div class="col s4 input-field">
+                                            <input id="priceFrom" name="priceFrom" type="text" class="validate" required>
+                                            <label for="priceFrom">from</label>
+                                        </div>
+                                        <span class="col s1">to</span>
+                                        <div class="col s4 input-field">
+                                            <input id="priceTo" name="priceTo" type="text" class="validate" required>
+                                            <label for="priceTo">to</label>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </li>
                         <li>
@@ -84,14 +98,16 @@
                 //создаем ее
                 let filteredProductsUrl
                 if (!filterData) {
-                    filteredProductsUrl = 'api/products'
+                    filteredProductsUrl = 'http://localhost:8090/simplespa/api/products'
                 } else {
                     filteredProductsUrl =
                         `api/products/filtered
                         ::orderBy:${filterData.orderBy}
                         ::sortingDirection:${filterData.sortingDirection}
                         /?search=
-                            ${filterData.categories ? 'category:' + JSON.stringify(filterData.categories) + ';' : ''}`
+                            price>:${filterData.priceFrom};
+                            price<:${filterData.priceTo}
+                            ${filterData.categories ? ';category:' + JSON.stringify(filterData.categories) : ''}`
                 }
                 // Запрашиваем у контроллера отфильтрованные и отсортированные
                 // товары, передавая ему модель фильтрации
@@ -227,6 +243,28 @@
                 }).always(function () {
                     preloaderHide()
                 })
+                // получение минимальной и максимальной цен товаров для фильтра
+                preloaderShow()
+                $.ajax({
+                    url: 'api/products/price-bounds',
+                    type: "GET",
+                    cache: false
+                }).done(function (resp) {
+                    if (resp) {
+                        if (resp.status === 'error') {
+                            alert("Error: " + resp.message)
+                        } else {
+                            // помещаем на веб-страницу
+                            $root.find('#priceFrom').val(resp.data.min)
+                            $root.find('#priceTo').val(resp.data.max)
+                            M.updateTextFields()
+                        }
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    alert("Error: " + jqXHR)
+                }).always(function () {
+                    preloaderHide()
+                })
             }
             // вызов функции заполнения списка фильтра по категориям
             populateCategoriesFilter()
@@ -247,6 +285,11 @@
                 if (categoryArray.length > 0) {
                     filterData["categories"] = categoryArray
                 }
+                // собираем данные про нижнюю и впрхнюю границы цен
+                filterData["priceFrom"] =
+                    $root.find('#priceFrom').val()
+                filterData["priceTo"] =
+                    $root.find('#priceTo').val()
                 // добавляем параметры сортировки в объект запроса
                 const checkedSortingRadioButton =
                     $root.find('form#order-rules input[type=radio]:checked')
@@ -266,13 +309,25 @@
             $(document).unbind('change')
             $(document).on(
                 'change'
-                , '#shopping-root #categories input[type=checkbox]'
+                , `#shopping-root #categories input[type=checkbox]`
                 , function () {
                     doFilter()
                 })
             $(document).on(
                 'change'
                 , 'form#order-rules input[type=radio]:checked'
+                , function () {
+                    doFilter()
+                })
+            $(document).on(
+                'input'
+                , '#priceFrom'
+                , function () {
+                    doFilter()
+                })
+            $(document).on(
+                'input'
+                , '#priceTo'
                 , function () {
                     doFilter()
                 })

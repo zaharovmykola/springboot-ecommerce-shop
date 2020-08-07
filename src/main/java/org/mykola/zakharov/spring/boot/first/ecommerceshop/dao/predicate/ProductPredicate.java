@@ -49,6 +49,13 @@ public class ProductPredicate {
                 // значение поля должно быть меньше значения value, исключая его
                 case "<":
                     return path.lt(value);
+                // значение поля должно быть больше значения value, исключая его
+                case ">:":
+                    return path.goe(value);
+                // значение поля должно быть меньше значения value, исключая его
+                case "<:":
+                    final int SQL_ROUND_COMPENSATION = 1;
+                    return path.loe(value + SQL_ROUND_COMPENSATION);
             }
         } else if (criteria.getValue().toString().startsWith("[")) {
             // если первый символ значения - открывающая квадратная скобка массива -

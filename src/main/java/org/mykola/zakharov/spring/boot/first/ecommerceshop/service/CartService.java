@@ -25,32 +25,42 @@ public class CartService {
                 .build();
     }
 
-    public ResponseModel changeCartItemCount(Cart cart, Long id, CartItem.Action action) {
+    // изменить число определенного товара в объекте корзины
+    public ResponseModel changeCartItemCount(Cart cart, Long productId, CartItem.Action action) {
         CartItem currentCartItem = null;
-        Product product = productDAO.findById(id).get();
+        // в БД находим описание товара по его ИД
+        Product product = productDAO.findById(productId).get();
+        // в объекте корзины пытаемся найти элемент списка товаров в корзине,
+        // у которого ИД описания товара такой же, как заданный для изменения
         List<CartItem> currentCartItemList =
                 cart.getCartItems()
                         .stream()
-                        .filter((item) -> item.getId().equals(id))
+                        .filter((item) -> item.getId().equals(productId))
                         .collect(Collectors.toList());
+        // если в корзине уже был хотя бы один такой товар
         if (currentCartItemList.size() > 0) {
             currentCartItem = currentCartItemList.get(0);
         } else {
-            currentCartItem = new CartItem(id, product.getName(), 0);
+            // если нет - добавляем товар в корзину с указанием его числа 0
+            currentCartItem = new CartItem(productId, product.getName(), 0, product.getPrice());
             cart.getCartItems().add(currentCartItem);
         }
         if (action != null) {
             switch (action) {
                 case ADD:
+                    // увеличение числа товара в корзтине на 1
                     currentCartItem.setCount(currentCartItem.getCount() + 1);
                     break;
                 case SUB:
+                    // уменьшение числа товара в корзтине на 1,
+                    // но если осталось 0 или меньше - полное удаление товара из корзины
                     currentCartItem.setCount(currentCartItem.getCount() - 1);
                     if (currentCartItem.getCount() <= 0) {
                         cart.getCartItems().remove(currentCartItem);
                     }
                     break;
                 case REM:
+                    // безусловное полное удаление товара из корзины
                     cart.getCartItems().remove(currentCartItem);
                     break;
                 default:
