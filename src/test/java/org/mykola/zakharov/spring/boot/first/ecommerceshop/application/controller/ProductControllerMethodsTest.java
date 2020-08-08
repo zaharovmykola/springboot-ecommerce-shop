@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.controller.ProductController;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ProductFilterModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ProductModel;
+import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ProductSearchModel;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +32,7 @@ public class ProductControllerMethodsTest {
     private ProductController productController;
 
     @Test
-    public void shouldReturnAllProducts () {
+    public void shouldReturnAllProducts() {
         productController.getAll();
         ResponseEntity responseEntity = productController.getAll();
         assertNotNull(responseEntity);
@@ -39,7 +40,7 @@ public class ProductControllerMethodsTest {
     }
 
     @Test
-    public void shouldCreateProduct () {
+    public void shouldCreateProduct() {
         ProductModel productModel
                 = ProductModel.builder()
                 .title("test product 1")
@@ -54,7 +55,7 @@ public class ProductControllerMethodsTest {
     }
 
     @Test
-    public void shouldUpdateProduct () {
+    public void shouldUpdateProduct() {
         ProductModel productModel
                 = ProductModel.builder()
                 .id(1L)
@@ -72,7 +73,7 @@ public class ProductControllerMethodsTest {
     }
 
     @Test
-    public void shouldDeleteProduct () {
+    public void shouldDeleteProduct() {
         ProductModel productModel
                 = ProductModel.builder()
                 .id(2L)
@@ -90,7 +91,7 @@ public class ProductControllerMethodsTest {
     }
 
     @Test
-    public void shouldFilteredProductsByCategories () {
+    public void shouldFilteredProductsByCategories() {
         final ProductFilterModel filter =
                 ProductFilterModel.builder()
                         .categories(Arrays.asList(1L, 2L, 3L))
@@ -104,7 +105,7 @@ public class ProductControllerMethodsTest {
     }
 
     @Test
-    public void shouldFilteredProductsBySomeExactlyCategories () {
+    public void shouldFilteredProductsBySomeExactlyCategories() {
         final ProductFilterModel filter =
                 ProductFilterModel.builder()
                         .categories(Arrays.asList(1L, 2L))
@@ -119,7 +120,7 @@ public class ProductControllerMethodsTest {
         );
         assertNotNull(responseEntityFiltered);
         assertEquals(responseEntityFiltered.getStatusCode(), HttpStatus.OK);
-        ((List<ProductModel>)((ResponseModel)responseEntityFiltered.getBody())
+        ((List<ProductModel>) ((ResponseModel) responseEntityFiltered.getBody())
                 .getData())
                 .forEach(productModel -> {
                     if (!(productModel.getCategory().getId().equals(1L)
@@ -133,4 +134,26 @@ public class ProductControllerMethodsTest {
                 });
     }
 
-}
+    @Test
+    public void shouldGetProductsPriceBoundsWithOk() {
+        ResponseEntity responseEntity =
+                productController.getProductsPriceBounds();
+        assertNotNull(responseEntity);
+        assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
+    }
+
+    @Test
+    public void shouldSearchWithOk() {
+        ResponseEntity responseEntity =
+                productController.search
+                    (
+                    "",
+                    "id",
+                        Sort.Direction.ASC
+                    );
+        assertNotNull(responseEntity);
+        assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
+        // ?search=price%3E:60;price%3C:232;category:[2,1];
+    }
+
+    }

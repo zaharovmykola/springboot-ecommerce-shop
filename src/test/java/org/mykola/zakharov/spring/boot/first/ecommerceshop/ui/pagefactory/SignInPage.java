@@ -11,7 +11,6 @@ public class SignInPage extends AbstractPage {
     private By loginField = By.id("username");
     private By passwordField = By.id("password");
     private By signInButton = By.cssSelector("#signin-form button[type='submit']");
-    private By signOutButton = By.cssSelector("nav a[href='#!home:out']");
     private By errorParagraph = By.cssSelector(".error");
 
     public SignInPage(WebDriver driver) {

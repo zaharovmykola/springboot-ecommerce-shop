@@ -18,6 +18,9 @@ public class IndexPage extends AbstractPage {
     @FindBy(css = "nav a[href*='#!home:out']")
     private WebElement signOutButton;
 
+    @FindBy(css = "nav a[href*='#!shopping']")
+    private WebElement shoppingButton;
+
     // для пункта "Выход" подготавливаем только селектор,
     // потому что он будет отображаться только после входа
     // private By logOutButton = By.cssSelector("nav a[href*='#!home:out']");
@@ -35,6 +38,11 @@ public class IndexPage extends AbstractPage {
     public SignInPage clickSignOut() {
         signOutButton.click();
         return new SignInPage(driver);
+    }
+
+    public ShoppingPage clickShopping() {
+        shoppingButton.click();
+        return new ShoppingPage(driver);
     }
 
     public String getLogOutButtonText() {

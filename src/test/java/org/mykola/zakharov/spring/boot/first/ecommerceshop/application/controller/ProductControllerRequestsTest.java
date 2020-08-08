@@ -11,6 +11,7 @@ import org.mykola.zakharov.spring.boot.first.ecommerceshop.model.ResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -94,5 +95,18 @@ public class ProductControllerRequestsTest {
             Matcher<Iterable<? super Long>> matcher = hasItem(product.getCategory().getId());
             assertThat(categoryIds, matcher);
         });
+    }
+
+    @Test
+    @Order(3)
+    public void shouldSearchWIthOk()  {
+
+        ResponseEntity<ResponseModel> response =
+                testRestTemplate.getForEntity(
+                        baseUrl + "/products/filtered::orderBy:id::sortingDirection:DESC/?search=category:[1,2];quantity<2000;price%3E:60;price%3C:232;",
+                        ResponseModel.class
+                );
+        assertNotNull(response);
+        assertEquals(response.getStatusCode(), HttpStatus.OK);
     }
 }
