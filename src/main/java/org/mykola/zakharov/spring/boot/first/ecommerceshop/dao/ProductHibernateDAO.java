@@ -4,6 +4,7 @@ import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.core.types.dsl.StringPath;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.Product;
 import org.mykola.zakharov.spring.boot.first.ecommerceshop.entity.QProduct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +16,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductHibernateDAO extends JpaRepository<Product, Long>,
@@ -42,5 +44,20 @@ public interface ProductHibernateDAO extends JpaRepository<Product, Long>,
         bindings.bind(String.class)
                 .first((SingleValueBinding<StringPath, String>) StringExpression::containsIgnoreCase);
         bindings.excluding(root.image);
+    }
+
+
+    default Integer findMinimum (ProductHibernateDAO productDao) {
+        return productDao.findAll().stream()
+            .min(
+                (p1, p2) -> p1.getPrice().subtract(p2.getPrice()).intValue()
+            );
+    }
+
+    default Integer findMaximum (ProductHibernateDAO productDao) {
+        return productDao.findAll().stream()
+            .max(
+                (p1, p2) -> p1.getPrice().subtract(p2.getPrice()).intValue()
+            );
     }
 }
