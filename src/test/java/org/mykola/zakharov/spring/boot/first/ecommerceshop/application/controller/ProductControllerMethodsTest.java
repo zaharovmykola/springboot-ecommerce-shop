@@ -147,13 +147,12 @@ public class ProductControllerMethodsTest {
         ResponseEntity responseEntity =
                 productController.search
                     (
-                    "",
+                    "category:[1,2];quantity<2000;price>:60;price<:232;",
                     "id",
                         Sort.Direction.ASC
                     );
         assertNotNull(responseEntity);
         assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
-        // ?search=price%3E:60;price%3C:232;category:[2,1];
     }
 
     }

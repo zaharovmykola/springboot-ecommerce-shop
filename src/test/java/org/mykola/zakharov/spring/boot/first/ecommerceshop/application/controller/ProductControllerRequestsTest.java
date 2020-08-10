@@ -103,10 +103,19 @@ public class ProductControllerRequestsTest {
 
         ResponseEntity<ResponseModel> response =
                 testRestTemplate.getForEntity(
-                        baseUrl + "/products/filtered::orderBy:id::sortingDirection:DESC/?search=category:[1,2];quantity<2000;price%3E:60;price%3C:232;",
+                        baseUrl + "/products/filtered::orderBy:id::sortingDirection:DESC/?search=category:[1,2];quantity<2000;price>:60;price<:232;",
                         ResponseModel.class
                 );
         assertNotNull(response);
+        List<ProductModel> productModels =
+            (new ObjectMapper())
+                .convertValue(
+                        response.getBody().getData(),
+                        new TypeReference<List<ProductModel>>() { }
+                    );
+        productModels.forEach(productModel -> {
+            assertTrue(productModel.getPrice().intValue() >= 60 && productModel.getPrice().intValue() <= 232);
+        });
         assertEquals(response.getStatusCode(), HttpStatus.OK);
     }
 }

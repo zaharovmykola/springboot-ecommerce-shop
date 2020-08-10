@@ -15,6 +15,7 @@ import org.springframework.data.querydsl.binding.SingleValueBinding;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,18 +47,22 @@ public interface ProductHibernateDAO extends JpaRepository<Product, Long>,
         bindings.excluding(root.image);
     }
 
-
-    default Integer findMinimum (ProductHibernateDAO productDao) {
-        return productDao.findAll().stream()
+    @Query( "SELECT MIN(p.price) FROM Product p" )
+    BigDecimal findMinimum (); //{
+        // if ()
+        /* return productDao.findAll().stream()
             .min(
                 (p1, p2) -> p1.getPrice().subtract(p2.getPrice()).intValue()
-            );
-    }
-
-    default Integer findMaximum (ProductHibernateDAO productDao) {
+            ); */
+    //}
+    // find max price
+    // 1. find all
+    // 2. order by price DESC
+    // 3. get top 1
+    Product findTop1ByOrderByPriceDesc (); /* {
         return productDao.findAll().stream()
             .max(
                 (p1, p2) -> p1.getPrice().subtract(p2.getPrice()).intValue()
             );
-    }
+    } */
 }

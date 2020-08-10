@@ -71,6 +71,7 @@ public class ProductController {
             @PathVariable String orderBy,
             @PathVariable Sort.Direction sortingDirection
     ) {
+        System.err.println("searchString = " + searchString);
         return new ResponseEntity<>(
                 service.search(
                         new ProductSearchModel(searchString, orderBy, sortingDirection)
