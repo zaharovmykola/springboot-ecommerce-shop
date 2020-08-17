@@ -230,6 +230,25 @@ public class ProductServiceTest {
         assertEquals(((List)responseModel.getData()).size(), 3);
     }
 
+    @Test
+    void shouldGetProductsPriceBoundsSuccessfully() {
+        doReturn(new BigDecimal(48.5))
+                .when(productDAO)
+                .findMinimum();
+        doReturn(Product.builder().price(new BigDecimal(200.0)).build())
+                .when(productDAO)
+                .findTop1ByOrderByPriceDesc();
+        ResponseModel responseModel =
+                productService.getProductsPriceBounds();
+        assertNotNull(responseModel);
+        assertNotNull(responseModel.getData());
+        assertEquals(ResponseModel.SUCCESS_STATUS, responseModel.getStatus());
+        verify(productDAO, atLeast(1))
+                .findMinimum();
+        verify(productDAO, atLeast(1))
+                .findTop1ByOrderByPriceDesc();
+    }
+
     ResponseModel returnListOfProductModels () {
         return ResponseModel.builder()
                 .status(ResponseModel.SUCCESS_STATUS)
